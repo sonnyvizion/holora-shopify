@@ -1,0 +1,315 @@
+<section class="hero-banner full-width">
+  <div class="hero-banner__bg" {% if section.settings.bg_image != blank %}style="background-image: url('{{ section.settings.bg_image | image_url: width: 1920 }}');"{% endif %}></div>
+  <div class="hero-banner__content">
+    {% if section.settings.subtitle != blank %}
+      <p class="hero-banner__subtitle">{{ section.settings.subtitle }}</p>
+    {% endif %}
+
+    {% if section.settings.title != blank %}
+      <h1 class="hero-banner__title">{{ section.settings.title }}</h1>
+    {% endif %}
+
+    <div class="hero-banner__buttons">
+      {% if section.settings.btn_primary_label != blank %}
+        <a href="{{ section.settings.btn_primary_url }}" class="hero-banner__btn hero-banner__btn--primary">
+          {{ section.settings.btn_primary_label }}
+        </a>
+      {% endif %}
+      {% if section.settings.btn_secondary_label != blank %}
+        <a href="{{ section.settings.btn_secondary_url }}" class="hero-banner__btn hero-banner__btn--secondary">
+          {{ section.settings.btn_secondary_label }}
+        </a>
+      {% endif %}
+    </div>
+  </div>
+
+  {% assign pills = section.blocks | where: 'type', 'category_pill' %}
+  {% if pills.size > 0 %}
+    <div class="hero-banner__pills">
+      {% for block in pills %}
+        <a href="{{ block.settings.url }}" class="hero-banner__pill" {{ block.shopify_attributes }}>
+          {{ block.settings.label }}
+        </a>
+      {% endfor %}
+    </div>
+  {% endif %}
+</section>
+
+{% stylesheet %}
+  .hero-banner {
+    position: relative;
+    min-height: 100vh;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    color: #fff;
+    padding: 6rem 2rem 3rem;
+  }
+
+  .hero-banner__bg {
+    position: absolute;
+    inset: -20% 0;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    will-change: transform;
+    z-index: 0;
+  }
+
+  .hero-banner::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to bottom, rgba(0,0,0,0.15) 0%, rgba(0,0,0,0.35) 60%, rgba(0,0,0,0.6) 100%);
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  .hero-banner__content {
+    position: relative;
+    z-index: 2;
+    max-width: 800px;
+    margin-top: auto;
+  }
+
+  .hero-banner__subtitle {
+    font-size: 1rem;
+    font-weight: 400;
+    letter-spacing: 0.05em;
+    margin-bottom: 0.75rem;
+    opacity: 0.9;
+  }
+
+  .hero-banner__title {
+    font-size: clamp(2.5rem, 6vw, 4rem);
+    font-weight: 700;
+    line-height: 1.15;
+    margin-bottom: 2rem;
+  }
+
+  .hero-banner__buttons {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .hero-banner__btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.9rem 2.2rem;
+    border-radius: 999px;
+    font-size: 1rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: opacity 0.2s, transform 0.2s;
+    white-space: nowrap;
+  }
+
+  .hero-banner__btn:hover {
+    opacity: 0.9;
+    transform: translateY(-1px);
+  }
+
+  .hero-banner__btn--primary {
+    background: #fff;
+    color: #111;
+  }
+
+  .hero-banner__btn--secondary {
+    position: relative;
+    background: rgba(255,255,255,0.08);
+    color: #fff;
+    border: 1px solid rgba(255,255,255,0.25);
+    backdrop-filter: blur(24px) saturate(180%);
+    -webkit-backdrop-filter: blur(24px) saturate(180%);
+    box-shadow:
+      inset 0 1px 0 rgba(255,255,255,0.35),
+      inset 0 -1px 0 rgba(0,0,0,0.1),
+      0 4px 24px rgba(0,0,0,0.15);
+    overflow: hidden;
+  }
+
+  .hero-banner__btn--secondary::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: linear-gradient(
+      135deg,
+      rgba(255,255,255,0.18) 0%,
+      rgba(255,255,255,0.04) 50%,
+      rgba(255,255,255,0.0) 100%
+    );
+    pointer-events: none;
+  }
+
+  .hero-banner__btn--secondary:hover {
+    background: rgba(255,255,255,0.14);
+    border-color: rgba(255,255,255,0.4);
+    box-shadow:
+      inset 0 1px 0 rgba(255,255,255,0.45),
+      inset 0 -1px 0 rgba(0,0,0,0.1),
+      0 8px 32px rgba(0,0,0,0.2);
+  }
+
+  .hero-banner__pills {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-top: auto;
+    padding-top: 3rem;
+  }
+
+  .hero-banner__pill {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    padding: 0.6rem 1.4rem;
+    border-radius: 999px;
+    background: rgba(255,255,255,0.08);
+    color: #fff;
+    font-size: 0.9rem;
+    font-weight: 500;
+    text-decoration: none;
+    border: 1px solid rgba(255,255,255,0.2);
+    backdrop-filter: blur(24px) saturate(160%);
+    -webkit-backdrop-filter: blur(24px) saturate(160%);
+    box-shadow:
+      inset 0 1px 0 rgba(255,255,255,0.28),
+      inset 0 -1px 0 rgba(0,0,0,0.08),
+      0 2px 12px rgba(0,0,0,0.2);
+    overflow: hidden;
+    transition: background 0.2s, border-color 0.2s, box-shadow 0.2s;
+  }
+
+  .hero-banner__pill::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: linear-gradient(
+      135deg,
+      rgba(255,255,255,0.14) 0%,
+      rgba(255,255,255,0.02) 60%,
+      transparent 100%
+    );
+    pointer-events: none;
+  }
+
+  .hero-banner__pill:hover {
+    background: rgba(255,255,255,0.14);
+    border-color: rgba(255,255,255,0.35);
+    box-shadow:
+      inset 0 1px 0 rgba(255,255,255,0.38),
+      inset 0 -1px 0 rgba(0,0,0,0.08),
+      0 4px 20px rgba(0,0,0,0.25);
+  }
+{% endstylesheet %}
+
+<script>
+  (function() {
+    var bg = document.querySelector('.hero-banner__bg');
+    if (!bg) return;
+
+    function onScroll() {
+      var offset = window.scrollY * 0.08;
+      bg.style.transform = 'translateY(' + offset + 'px)';
+    }
+
+    window.addEventListener('scroll', onScroll, { passive: true });
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "Hero Banner",
+  "tag": "div",
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "bg_image",
+      "label": "Image de fond"
+    },
+    {
+      "type": "text",
+      "id": "subtitle",
+      "label": "Sous-titre",
+      "default": "Boutique TCG · Pokémon & One Piece"
+    },
+    {
+      "type": "textarea",
+      "id": "title",
+      "label": "Titre",
+      "default": "Bienvenue chez Holora\nla puissance du jeux"
+    },
+    {
+      "type": "header",
+      "content": "Bouton principal"
+    },
+    {
+      "type": "text",
+      "id": "btn_primary_label",
+      "label": "Texte",
+      "default": "Voir les nouveautés"
+    },
+    {
+      "type": "url",
+      "id": "btn_primary_url",
+      "label": "Lien"
+    },
+    {
+      "type": "header",
+      "content": "Bouton secondaire"
+    },
+    {
+      "type": "text",
+      "id": "btn_secondary_label",
+      "label": "Texte",
+      "default": "Cartes gradées"
+    },
+    {
+      "type": "url",
+      "id": "btn_secondary_url",
+      "label": "Lien"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "category_pill",
+      "name": "Catégorie",
+      "settings": [
+        {
+          "type": "text",
+          "id": "label",
+          "label": "Nom",
+          "default": "Catégorie"
+        },
+        {
+          "type": "url",
+          "id": "url",
+          "label": "Lien"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Hero Banner",
+      "blocks": [
+        { "type": "category_pill", "settings": { "label": "Cartes gradées" } },
+        { "type": "category_pill", "settings": { "label": "Scellé Fr" } },
+        { "type": "category_pill", "settings": { "label": "Display Jap" } },
+        { "type": "category_pill", "settings": { "label": "One Piece" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

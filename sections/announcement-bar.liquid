@@ -1,0 +1,117 @@
+{% style %}
+  #announcement-bar-{{ section.id }} {
+    background-color: {{ section.settings.bg_color }};
+  }
+  #announcement-bar-{{ section.id }} .announcement-bar__item {
+    color: {{ section.settings.text_color }};
+  }
+  #announcement-bar-{{ section.id }} .announcement-bar__track {
+    animation-duration: {{ section.settings.speed }}s;
+  }
+{% endstyle %}
+
+<div id="announcement-bar-{{ section.id }}" class="announcement-bar full-width">
+  <div class="announcement-bar__track">
+    {% assign items = section.blocks | where: 'type', 'item' %}
+    {% comment %}Moitié A — 4 répétitions{% endcomment %}
+    {% for i in (1..4) %}
+      {% for block in items %}
+        <span class="announcement-bar__item"{% if i == 1 %} {{ block.shopify_attributes }}{% endif %}>{{ block.settings.text }}</span>
+      {% endfor %}
+    {% endfor %}
+    {% comment %}Moitié B identique (aria-hidden pour l'accessibilité){% endcomment %}
+    {% for i in (1..4) %}
+      {% for block in items %}
+        <span class="announcement-bar__item" aria-hidden="true">{{ block.settings.text }}</span>
+      {% endfor %}
+    {% endfor %}
+  </div>
+</div>
+
+{% stylesheet %}
+  .announcement-bar {
+    overflow: hidden;
+    padding: 0.65rem 0;
+  }
+
+  .announcement-bar__track {
+    display: flex;
+    gap: 4rem;
+    width: max-content;
+    animation: announcement-marquee 25s linear infinite;
+    will-change: transform;
+  }
+
+  .announcement-bar__item {
+    font-size: 0.875rem;
+    font-weight: 500;
+    letter-spacing: 0.02em;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  @keyframes announcement-marquee {
+    from { transform: translateX(0); }
+    to { transform: translateX(-50%); }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .announcement-bar__track {
+      animation: none;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Announcement Bar",
+  "tag": "div",
+  "settings": [
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Couleur de fond",
+      "default": "#A855F7"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Couleur du texte",
+      "default": "#ffffff"
+    },
+    {
+      "type": "range",
+      "id": "speed",
+      "label": "Vitesse (secondes)",
+      "min": 10,
+      "max": 60,
+      "step": 5,
+      "default": 25
+    }
+  ],
+  "blocks": [
+    {
+      "type": "item",
+      "name": "Élément",
+      "settings": [
+        {
+          "type": "text",
+          "id": "text",
+          "label": "Texte",
+          "default": "Livraison offerte"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Announcement Bar",
+      "blocks": [
+        { "type": "item", "settings": { "text": "Livraison offerte" } },
+        { "type": "item", "settings": { "text": "Dès 200€ d'achats" } },
+        { "type": "item", "settings": { "text": "Expédition en 48 Heures" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

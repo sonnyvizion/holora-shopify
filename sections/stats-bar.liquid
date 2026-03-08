@@ -1,0 +1,219 @@
+{% style %}
+  #stats-bar-{{ section.id }} {
+    background-color: {{ section.settings.bg_color }};
+  }
+{% endstyle %}
+
+<div id="stats-bar-{{ section.id }}" class="stats-bar full-width">
+  <div class="stats-bar__inner">
+    {% for block in section.blocks %}
+      <div class="stats-bar__item" {{ block.shopify_attributes }}>
+        <span
+          class="stats-bar__value"
+          data-from="{{ block.settings.count_from }}"
+          data-to="{{ block.settings.count_to }}"
+          data-suffix="{{ block.settings.suffix }}"
+          data-prefix="{{ block.settings.prefix }}"
+          data-duration="{{ section.settings.duration }}"
+        >{{ block.settings.prefix }}{{ block.settings.count_to }}{{ block.settings.suffix }}</span>
+        <span class="stats-bar__label">{{ block.settings.label }}</span>
+      </div>
+      {% unless forloop.last %}
+        <div class="stats-bar__divider" aria-hidden="true"></div>
+      {% endunless %}
+    {% endfor %}
+  </div>
+</div>
+
+<script>
+(function() {
+  function easeOutExpo(t) {
+    return t === 1 ? 1 : 1 - Math.pow(2, -10 * t);
+  }
+
+  function animateCounter(el) {
+    var from = parseFloat(el.dataset.from);
+    var to = parseFloat(el.dataset.to);
+    var suffix = el.dataset.suffix || '';
+    var prefix = el.dataset.prefix || '';
+    var duration = parseInt(el.dataset.duration, 10) || 1500;
+    var startTime = null;
+    var isFloat = (to % 1 !== 0) || (from % 1 !== 0);
+
+    function step(timestamp) {
+      if (!startTime) startTime = timestamp;
+      var elapsed = timestamp - startTime;
+      var progress = Math.min(elapsed / duration, 1);
+      var eased = easeOutExpo(progress);
+      var current = from + (to - from) * eased;
+      var display = isFloat ? current.toFixed(2) : Math.round(current);
+      el.textContent = prefix + display + suffix;
+      if (progress < 1) {
+        requestAnimationFrame(step);
+      } else {
+        el.textContent = prefix + (isFloat ? to.toFixed(2) : to) + suffix;
+      }
+    }
+
+    requestAnimationFrame(step);
+  }
+
+  var observed = false;
+  var observer = new IntersectionObserver(function(entries) {
+    entries.forEach(function(entry) {
+      if (entry.isIntersecting && !observed) {
+        observed = true;
+        var counters = entry.target.querySelectorAll('.stats-bar__value');
+        counters.forEach(function(el) { animateCounter(el); });
+        observer.disconnect();
+      }
+    });
+  }, { threshold: 0.3 });
+
+  var bar = document.getElementById('stats-bar-{{ section.id }}');
+  if (bar) observer.observe(bar);
+})();
+</script>
+
+{% stylesheet %}
+  .stats-bar {
+    padding: 3.5rem 2rem;
+  }
+
+  .stats-bar__inner {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0;
+    max-width: 900px;
+    margin: 0 auto;
+  }
+
+  .stats-bar__item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.4rem;
+    flex: 1;
+    padding: 0 2rem;
+  }
+
+  .stats-bar__value {
+    font-size: clamp(2rem, 5vw, 3rem);
+    font-weight: 700;
+    color: #ffffff;
+    line-height: 1;
+    letter-spacing: -0.03em;
+  }
+
+  .stats-bar__label {
+    font-size: 0.875rem;
+    font-weight: 400;
+    color: rgba(255,255,255,0.5);
+    letter-spacing: 0.01em;
+  }
+
+  .stats-bar__divider {
+    width: 1px;
+    height: 3rem;
+    background: rgba(255,255,255,0.12);
+    flex-shrink: 0;
+  }
+
+  @media (max-width: 640px) {
+    .stats-bar__inner {
+      flex-wrap: wrap;
+      gap: 2rem;
+    }
+    .stats-bar__divider {
+      display: none;
+    }
+    .stats-bar__item {
+      flex: 0 0 calc(50% - 1rem);
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Stats Bar",
+  "tag": "div",
+  "settings": [
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Couleur de fond",
+      "default": "#1a1a1a"
+    },
+    {
+      "type": "range",
+      "id": "duration",
+      "label": "Durée animation (ms)",
+      "min": 500,
+      "max": 3000,
+      "step": 100,
+      "default": 1500
+    }
+  ],
+  "blocks": [
+    {
+      "type": "stat",
+      "name": "Statistique",
+      "settings": [
+        {
+          "type": "text",
+          "id": "prefix",
+          "label": "Préfixe (ex: +)",
+          "default": "+"
+        },
+        {
+          "type": "number",
+          "id": "count_from",
+          "label": "Valeur de départ",
+          "default": 0
+        },
+        {
+          "type": "number",
+          "id": "count_to",
+          "label": "Valeur finale",
+          "default": 1027
+        },
+        {
+          "type": "text",
+          "id": "suffix",
+          "label": "Suffixe (ex: h, /5)"
+        },
+        {
+          "type": "text",
+          "id": "label",
+          "label": "Libellé",
+          "default": "Articles vendus"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Stats Bar",
+      "blocks": [
+        {
+          "type": "stat",
+          "settings": { "prefix": "+", "count_from": 0, "count_to": 1027, "suffix": "", "label": "Articles vendus" }
+        },
+        {
+          "type": "stat",
+          "settings": { "prefix": "", "count_from": 300, "count_to": 0, "suffix": "", "label": "Carte abîmée" }
+        },
+        {
+          "type": "stat",
+          "settings": { "prefix": "", "count_from": 0, "count_to": 48, "suffix": "h", "label": "D'expédition" }
+        },
+        {
+          "type": "stat",
+          "settings": { "prefix": "", "count_from": 0, "count_to": 4.97, "suffix": "/5", "label": "Avis vérifiés" }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}
