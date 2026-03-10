@@ -1,0 +1,385 @@
+<div class="nb full-width" id="nb-{{ section.id }}">
+  <div class="nb__inner">
+
+    <h2 class="nb__title">{{ section.settings.title }}</h2>
+    <div class="nb__line"></div>
+
+    <!-- Newsletter -->
+    <div class="nb__newsletter">
+      <div class="nb__newsletter-text">
+        {% if section.settings.newsletter_title != blank %}
+          <h3 class="nb__newsletter-title">{{ section.settings.newsletter_title }}</h3>
+        {% endif %}
+        {% if section.settings.newsletter_desc != blank %}
+          <p class="nb__newsletter-desc">{{ section.settings.newsletter_desc }}</p>
+        {% endif %}
+      </div>
+      <div class="nb__newsletter-form">
+        {% form 'customer' %}
+          <input type="hidden" name="contact[tags]" value="newsletter">
+          <div class="nb__form-row">
+            <input
+              type="email"
+              name="contact[email]"
+              placeholder="{{ section.settings.placeholder | default: 'name@email.fr' }}"
+              class="nb__input"
+              required
+              autocomplete="email"
+            >
+            <button type="submit" class="nb__submit">
+              {{ section.settings.btn_label | default: "S'inscrire" }}
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </button>
+          </div>
+          {% if form.posted_successfully? %}
+            <p class="nb__success">Merci, tu es bien inscrit·e !</p>
+          {% endif %}
+        {% endform %}
+      </div>
+    </div>
+
+    <!-- Blog article -->
+    {% if section.settings.article != blank %}
+      {% assign art = articles[section.settings.article] %}
+      {% if art != blank %}
+        <div class="nb__article">
+          {% if art.image %}
+            <a href="{{ art.url }}" class="nb__article-img-wrap">
+              <img
+                class="nb__article-img"
+                src="{{ art.image | image_url: width: 800 }}"
+                alt="{{ art.image.alt | escape }}"
+                loading="lazy"
+              >
+            </a>
+          {% endif %}
+          <div class="nb__article-body">
+            <h3 class="nb__article-title">{{ art.title }}</h3>
+            {% if section.settings.article_desc != blank %}
+              <p class="nb__article-desc">{{ section.settings.article_desc }}</p>
+            {% elsif art.excerpt != blank %}
+              <p class="nb__article-desc">{{ art.excerpt | strip_html | truncate: 120 }}</p>
+            {% endif %}
+            <div class="nb__article-btns">
+              <a href="{{ art.url }}" class="nb__btn nb__btn--primary">{{ section.settings.cta_article | default: "Voir l'article" }}</a>
+              {% if section.settings.blog_url != blank %}
+                <a href="{{ section.settings.blog_url }}" class="nb__btn nb__btn--outline">{{ section.settings.cta_blog | default: "Voir tous les articles" }}</a>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+      {% endif %}
+    {% endif %}
+
+  </div>
+</div>
+
+{% stylesheet %}
+  .nb {
+    background: #2b2b38;
+    background-image: radial-gradient(circle, rgba(255,255,255,0.06) 1px, transparent 1px);
+    background-size: 28px 28px;
+    font-family: 'CircularStd', sans-serif;
+    padding: 4rem 0;
+  }
+
+  .nb__inner {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 0 3rem;
+  }
+
+  .nb__title {
+    font-size: 2rem;
+    font-weight: 300;
+    letter-spacing: -0.03em;
+    color: #fff;
+    margin: 0;
+  }
+
+  .nb__line {
+    height: 1px;
+    background: linear-gradient(90deg, rgba(255,255,255,0.4), transparent);
+    margin: 1rem 0 2.5rem;
+  }
+
+  /* --- Newsletter --- */
+  .nb__newsletter {
+    display: flex;
+    align-items: center;
+    gap: 3rem;
+    margin-bottom: 3.5rem;
+  }
+
+  .nb__newsletter-text {
+    flex: 1;
+  }
+
+  .nb__newsletter-title {
+    font-size: 1.5rem;
+    font-weight: 400;
+    color: #fff;
+    letter-spacing: -0.02em;
+    margin: 0 0 0.5rem;
+    line-height: 1.2;
+  }
+
+  .nb__newsletter-desc {
+    font-size: 0.875rem;
+    color: #999;
+    margin: 0;
+    line-height: 1.5;
+  }
+
+  .nb__newsletter-form {
+    flex: 1;
+  }
+
+  .nb__form-row {
+    display: flex;
+    align-items: center;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 999px;
+    padding: 4px 4px 4px 1.2rem;
+    gap: 0.5rem;
+  }
+
+  .nb__input {
+    flex: 1;
+    background: transparent;
+    border: none;
+    outline: none;
+    color: #fff;
+    font-size: 0.9rem;
+    font-family: 'CircularStd', sans-serif;
+    min-width: 0;
+  }
+
+  .nb__input::placeholder {
+    color: #777;
+  }
+
+  .nb__submit {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    background: linear-gradient(135deg, #a78bfa, #7c3aed);
+    color: #fff;
+    border: none;
+    border-radius: 999px;
+    padding: 0.6rem 1.2rem;
+    font-size: 0.9rem;
+    font-weight: 500;
+    font-family: 'CircularStd', sans-serif;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: opacity 0.2s;
+  }
+
+  .nb__submit:hover {
+    opacity: 0.85;
+  }
+
+  .nb__success {
+    margin: 0.6rem 0 0;
+    font-size: 0.85rem;
+    color: #7eca9c;
+  }
+
+  /* --- Article --- */
+  .nb__article {
+    display: flex;
+    gap: 2.5rem;
+    align-items: center;
+  }
+
+  .nb__article-img-wrap {
+    flex-shrink: 0;
+    width: 42%;
+    border-radius: 16px;
+    overflow: hidden;
+    display: block;
+  }
+
+  .nb__article-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.4s ease;
+  }
+
+  .nb__article-img-wrap:hover .nb__article-img {
+    transform: scale(1.03);
+  }
+
+  .nb__article-body {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .nb__article-title {
+    font-size: 1.4rem;
+    font-weight: 400;
+    color: #fff;
+    letter-spacing: -0.02em;
+    margin: 0;
+    line-height: 1.25;
+  }
+
+  .nb__article-desc {
+    font-size: 0.875rem;
+    color: #999;
+    margin: 0;
+    line-height: 1.5;
+  }
+
+  .nb__article-btns {
+    display: flex;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+    margin-top: 0.5rem;
+  }
+
+  .nb__btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.65rem 1.4rem;
+    border-radius: 999px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    text-decoration: none;
+    transition: opacity 0.2s;
+  }
+
+  .nb__btn--primary {
+    background: linear-gradient(135deg, #a78bfa, #7c3aed);
+    color: #fff;
+  }
+
+  .nb__btn--outline {
+    background: transparent;
+    border: 1px solid rgba(255,255,255,0.3);
+    color: #fff;
+  }
+
+  .nb__btn:hover {
+    opacity: 0.8;
+  }
+
+  @media (max-width: 768px) {
+    .nb__inner {
+      padding: 0 1.25rem;
+    }
+
+    .nb__newsletter {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 1.5rem;
+    }
+
+    .nb__newsletter-form {
+      width: 100%;
+    }
+
+    .nb__article {
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    .nb__article-img-wrap {
+      width: 100%;
+    }
+
+    .nb__article-btns {
+      flex-direction: column;
+    }
+
+    .nb__btn {
+      width: 100%;
+      text-align: center;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Newsletter & Blog",
+  "settings": [
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Titre",
+      "default": "Restez dans la course"
+    },
+    {
+      "type": "header",
+      "content": "Newsletter"
+    },
+    {
+      "type": "text",
+      "id": "newsletter_title",
+      "label": "Titre newsletter",
+      "default": "Ne loupez rien, en vous abonnant à la newsletter"
+    },
+    {
+      "type": "textarea",
+      "id": "newsletter_desc",
+      "label": "Description",
+      "default": "Nouveaux arrivages, offres exclusives, alertes de stock.\nPas de spam — juste le TCG."
+    },
+    {
+      "type": "text",
+      "id": "placeholder",
+      "label": "Placeholder email",
+      "default": "name@email.fr"
+    },
+    {
+      "type": "text",
+      "id": "btn_label",
+      "label": "Texte bouton",
+      "default": "S'inscrire"
+    },
+    {
+      "type": "header",
+      "content": "Article blog"
+    },
+    {
+      "type": "article",
+      "id": "article",
+      "label": "Article à mettre en avant"
+    },
+    {
+      "type": "textarea",
+      "id": "article_desc",
+      "label": "Description (optionnel, sinon extrait de l'article)"
+    },
+    {
+      "type": "text",
+      "id": "cta_article",
+      "label": "CTA article",
+      "default": "Voir l'article"
+    },
+    {
+      "type": "url",
+      "id": "blog_url",
+      "label": "Lien vers tous les articles"
+    },
+    {
+      "type": "text",
+      "id": "cta_blog",
+      "label": "CTA tous les articles",
+      "default": "Voir tous les articles"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Newsletter & Blog"
+    }
+  ]
+}
+{% endschema %}

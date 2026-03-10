@@ -1,0 +1,117 @@
+{% style %}
+  #tagline-{{ section.id }} .tagline__subtitle {
+    background: linear-gradient(90deg, #767676 0%, #C1C1C1 50%, #767676 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    display: inline-block;
+  }
+{% endstyle %}
+
+<div id="tagline-{{ section.id }}" class="tagline full-width">
+  <div class="tagline__inner">
+    {% if section.settings.title_desktop != blank %}
+      <h2 class="tagline__title tagline__title--desktop">{{ section.settings.title_desktop | newline_to_br }}</h2>
+    {% endif %}
+    {% if section.settings.title_mobile != blank %}
+      <h2 class="tagline__title tagline__title--mobile">{{ section.settings.title_mobile | newline_to_br }}</h2>
+    {% endif %}
+    {% if section.settings.subtitle != blank %}
+      <p class="tagline__subtitle">{{ section.settings.subtitle }}</p>
+    {% endif %}
+  </div>
+</div>
+
+{% stylesheet %}
+  .tagline {
+    padding: 6rem 3rem;
+    text-align: center;
+  }
+
+  .tagline__inner {
+    max-width: 860px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.5rem;
+  }
+
+  .tagline__title {
+    font-size: clamp(1.8rem, 4vw, 3rem);
+    font-weight: 400;
+    line-height: 0.95;
+    letter-spacing: -0.05em;
+    color: #fff;
+    margin: 0;
+  }
+
+  .tagline__title--mobile {
+    display: none;
+  }
+
+  .tagline__subtitle {
+    font-size: 24px;
+    font-weight: 400;
+    letter-spacing: 0.01em;
+    margin: 0;
+  }
+
+  @media (max-width: 768px) {
+    .tagline__title--desktop {
+      display: none;
+    }
+    .tagline__title--mobile {
+      display: block;
+      font-size: clamp(1.5rem, 6vw, 2rem);
+    }
+    .tagline__subtitle {
+      font-size: 14px;
+      line-height: 1;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Tagline",
+  "tag": "section",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Desktop"
+    },
+    {
+      "type": "textarea",
+      "id": "title_desktop",
+      "label": "Titre desktop",
+      "default": "Les pièces que tout le monde veut sont ici maintenant, avant tout le monde\nNe laisse pas quelqu'un d'autre les prendre"
+    },
+    {
+      "type": "header",
+      "content": "Mobile"
+    },
+    {
+      "type": "textarea",
+      "id": "title_mobile",
+      "label": "Titre mobile",
+      "default": "Les pièces que tout le monde veut sont ici maintenant, avant tout le monde\nNe laisse pas quelqu'un d'autre les prendre"
+    },
+    {
+      "type": "header",
+      "content": "Général"
+    },
+    {
+      "type": "text",
+      "id": "subtitle",
+      "label": "Sous-titre",
+      "default": "Chaque semaine de nouveaux arrivages. Les stocks partent vite."
+    }
+  ],
+  "presets": [
+    {
+      "name": "Tagline"
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,526 @@
+{% assign col = collections[section.settings.collection] %}
+
+<div class="col-slider full-width" id="col-slider-{{ section.id }}">
+  <div class="col-slider__header">
+    <div class="col-slider__title-wrap">
+      <h2 class="col-slider__title">{{ section.settings.title }}</h2>
+    </div>
+    <div class="col-slider__arrows">
+      <button class="col-slider__arrow col-slider__arrow--prev" aria-label="Précédent">&#8249;</button>
+      <button class="col-slider__arrow col-slider__arrow--next" aria-label="Suivant">&#8250;</button>
+    </div>
+  </div>
+
+  <div class="col-slider__title-line">
+    <div class="col-slider__title-line-fill"></div>
+  </div>
+
+  <div class="col-slider__track-wrap">
+    <div class="col-slider__track" id="track-{{ section.id }}">
+      <div class="col-slider__track-spacer" aria-hidden="true"></div>
+      {% for product in col.products limit: section.settings.products_count %}
+        {% assign total_inventory = 0 %}
+        {% for variant in product.variants %}
+          {% assign total_inventory = total_inventory | plus: variant.inventory_quantity %}
+        {% endfor %}
+        {% assign show_badge = false %}
+        {% if total_inventory > 0 and total_inventory <= 5 %}
+          {% assign show_badge = true %}
+        {% endif %}
+        {% assign second_image = product.images[1] %}
+
+        <div class="col-slider__wrap">
+          <div class="col-slider__card">
+            <a href="{{ product.url }}" class="col-slider__image-wrap">
+              <img
+                class="col-slider__img col-slider__img--primary"
+                src="{{ product.featured_image | image_url: width: 600 }}"
+                alt="{{ product.featured_image.alt | escape }}"
+                width="600"
+                height="600"
+                loading="lazy"
+              >
+              {% if second_image %}
+                <img
+                  class="col-slider__img col-slider__img--secondary"
+                  src="{{ second_image | image_url: width: 600 }}"
+                  alt="{{ second_image.alt | escape }}"
+                  width="600"
+                  height="600"
+                  loading="lazy"
+                >
+              {% endif %}
+            </a>
+
+            {% if show_badge %}
+              <div class="col-slider__badge">Plus que {{ total_inventory }} produit{% if total_inventory > 1 %}s{% endif %} !</div>
+            {% endif %}
+
+            <div class="col-slider__info">
+              {% assign label = col.title | default: product.collections.first.title %}
+              {% if label != blank %}
+                <p class="col-slider__collection-label">{{ label }}</p>
+              {% endif %}
+              <p class="col-slider__name">{{ product.title }}</p>
+              <p class="col-slider__price">{{ product.price | money }}</p>
+              <a href="{{ product.url }}" class="col-slider__cta-mobile-btn">Voir Plus</a>
+            </div>
+          </div>
+
+          <button
+            class="col-slider__cta"
+            data-variant-id="{{ product.variants.first.id }}"
+          >
+            <span class="col-slider__cta-desktop">Ajouter au panier</span>
+            <span class="col-slider__cta-mobile">Voir Plus</span>
+          </button>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+
+  <div class="col-slider__footer">
+    {% assign cta_url = section.settings.cta_url | default: col.url %}
+    {% assign cta_label = section.settings.cta_label | default: 'Voir les nouveautés' %}
+    {% if cta_url != blank %}
+      <a href="{{ cta_url }}" class="col-slider__footer-cta">{{ cta_label }}</a>
+    {% endif %}
+  </div>
+</div>
+
+{% stylesheet %}
+  .col-slider {
+    padding: 3rem 0;
+    font-family: 'CircularStd', sans-serif;
+  }
+
+  .col-slider__header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    margin-bottom: 0.75rem;
+    padding: 0 3rem;
+  }
+
+  .col-slider__title-wrap {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .col-slider__title {
+    font-size: 2rem;
+    font-weight: 300;
+    letter-spacing: -0.03em;
+    margin: 0;
+    color: #fff;
+  }
+
+  .col-slider__title-line {
+    height: 1px;
+    background: linear-gradient(90deg, #D9D9D9, #242427);
+    position: relative;
+    overflow: hidden;
+    margin: 0 3rem 1.5rem;
+  }
+
+  .col-slider__title-line-fill {
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 100%;
+    width: 0%;
+    background: #D9D9D9;
+    transition: width 0.2s ease;
+  }
+
+  .col-slider__arrows {
+    display: flex;
+    gap: 0.75rem;
+    align-items: center;
+  }
+
+  .col-slider__arrow {
+    background: none;
+    border: none;
+    color: #fff;
+    cursor: pointer;
+    font-size: 1.1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    line-height: 1;
+    opacity: 0.5;
+    transition: opacity 0.2s;
+  }
+
+  .col-slider__arrow:hover {
+    opacity: 1;
+  }
+
+  .col-slider__track-wrap {
+    overflow: hidden;
+    padding-bottom: 52px;
+    margin-bottom: -52px;
+  }
+
+  .col-slider__track {
+    display: flex;
+    gap: 1rem;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    scroll-behavior: smooth;
+    padding: 0 3rem 52px 0;
+    margin-bottom: -52px;
+    align-items: stretch;
+  }
+
+  .col-slider__track::-webkit-scrollbar {
+    display: none;
+  }
+
+  .col-slider__wrap {
+    flex: 0 0 calc(25% - 0.75rem);
+    scroll-snap-align: start;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    z-index: 1;
+    border-radius: 25px;
+  }
+
+  .col-slider__track-spacer {
+    flex: 0 0 calc(3rem - 1rem);
+    min-width: calc(3rem - 1rem);
+    scroll-snap-align: start;
+  }
+
+  .col-slider__card {
+    border-radius: 25px;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.08);
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    overflow: hidden;
+    box-shadow: 0 2px 20px rgba(0,0,0,0.25);
+  }
+
+  .col-slider__image-wrap {
+    display: block;
+    aspect-ratio: 1;
+    overflow: hidden;
+    background: #ebebeb;
+    border-radius: 0;
+    position: relative;
+  }
+
+  .col-slider__img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    transition: opacity 0.4s ease;
+  }
+
+  .col-slider__img--primary {
+    opacity: 1;
+  }
+
+  .col-slider__img--secondary {
+    opacity: 0;
+  }
+
+  .col-slider__wrap:hover .col-slider__img--primary {
+    opacity: 0;
+  }
+
+  .col-slider__wrap:hover .col-slider__img--secondary {
+    opacity: 1;
+  }
+
+  .col-slider__badge {
+    background: #f4a4b0;
+    color: #111;
+    font-size: 0.78rem;
+    font-weight: 500;
+    text-align: center;
+    padding: 0.4rem 1rem;
+    letter-spacing: 0.01em;
+  }
+
+  .col-slider__info {
+    padding: 0.9rem 1rem 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+    flex: 1;
+    background: #FBFBFB;
+    text-align: center;
+    align-items: center;
+  }
+
+  .col-slider__collection-label {
+    font-size: 0.7rem;
+    font-weight: 500;
+    margin: 0;
+    color: #CA94F9;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+  }
+
+  .col-slider__name {
+    font-size: 0.85rem;
+    font-weight: 400;
+    margin: 0;
+    color: #111;
+    line-height: 1.35;
+  }
+
+  .col-slider__price {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin: 0;
+    letter-spacing: -0.03em;
+    color: #111;
+  }
+
+  .col-slider__cta {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 77px;
+    padding: 25px 1rem 0;
+    background: #a855f7;
+    color: #fff;
+    border: none;
+    font-size: 0.85rem;
+    font-weight: 500;
+    letter-spacing: -0.02em;
+    cursor: pointer;
+    transition: transform 0.4s ease-out, background 0.2s;
+    text-align: center;
+    border-radius: 0 0 25px 25px;
+    transform: translateY(0);
+    z-index: -1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .col-slider__wrap:hover .col-slider__cta {
+    transform: translateY(52px);
+  }
+
+  .col-slider__cta:hover {
+    background: #9333ea;
+  }
+
+  .col-slider__cta-mobile {
+    display: none;
+  }
+
+  .col-slider__footer {
+    margin-top: 5rem;
+    display: flex;
+    justify-content: center;
+    padding: 0 var(--page-margin, 2rem);
+  }
+
+  .col-slider__footer-cta {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.9rem 2.5rem;
+    border-radius: 999px;
+    background: #F6F6F6;
+    border: 1px solid #F6F6F6;
+    color: #000000;
+    font-size: 0.95rem;
+    font-weight: 400;
+    letter-spacing: -0.02em;
+    text-decoration: none;
+    transition: background 0.2s, border-color 0.2s;
+  }
+
+  .col-slider__footer-cta:hover {
+    background: #e0e0e0;
+    border-color: #e0e0e0;
+  }
+
+  .col-slider__cta-mobile-btn {
+    display: none;
+  }
+
+  @media (max-width: 768px) {
+    .col-slider__wrap {
+      flex: 0 0 58%;
+    }
+
+    .col-slider__footer {
+      margin-top: 2rem;
+    }
+
+    .col-slider__header {
+      padding: 0 1rem;
+    }
+
+    .col-slider__title-line {
+      margin-left: 1rem;
+      margin-right: 1rem;
+    }
+
+    .col-slider__title {
+      font-size: 1.5rem;
+    }
+
+    .col-slider__collection-label {
+      font-size: 0.5rem;
+      font-weight: 100;
+      margin: 0;
+      color: #ca94f9;
+      letter-spacing: 0.02em;
+      text-transform: uppercase;
+      line-height: 1.2;
+    }
+
+    .col-slider__name {
+      font-size: 0.75rem;
+    }
+
+    .col-slider__price {
+      font-size: 1rem;
+      margin-top: auto;
+    }
+
+    .col-slider__cta {
+      display: none;
+    }
+
+    .col-slider__cta-mobile-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      padding: 0.6rem 1.5rem;
+      background: #e9d5ff;
+      color: #7c3aed;
+      border-radius: 999px;
+      font-size: 0.85rem;
+      font-weight: 500;
+      letter-spacing: -0.01em;
+      text-decoration: none;
+      margin-top: auto;
+      padding-top: 0.6rem;
+    }
+  }
+{% endstylesheet %}
+
+<script>
+  (function() {
+    var track = document.getElementById('track-{{ section.id }}');
+    var prev = document.querySelector('#col-slider-{{ section.id }} .col-slider__arrow--prev');
+    var next = document.querySelector('#col-slider-{{ section.id }} .col-slider__arrow--next');
+    if (!track) return;
+
+    var fill = document.querySelector('#col-slider-{{ section.id }} .col-slider__title-line-fill');
+
+    function updateProgress() {
+      if (!fill) return;
+      var progress = (track.scrollLeft + track.clientWidth) / track.scrollWidth;
+      fill.style.width = (progress * 100) + '%';
+    }
+
+    track.addEventListener('scroll', updateProgress);
+    updateProgress();
+
+    var cardWidth = function() {
+      var card = track.querySelector('.col-slider__wrap');
+      return card ? card.offsetWidth + 16 : 300;
+    };
+
+    prev.addEventListener('click', function() {
+      track.scrollBy({ left: -cardWidth(), behavior: 'smooth' });
+    });
+
+    next.addEventListener('click', function() {
+      track.scrollBy({ left: cardWidth(), behavior: 'smooth' });
+    });
+
+    track.querySelectorAll('.col-slider__cta').forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        var variantId = btn.dataset.variantId;
+        if (!variantId) return;
+
+        fetch('/cart/add.js', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ id: variantId, quantity: 1 })
+        })
+        .then(function(res) { return res.json(); })
+        .then(function() {
+          var desktop = btn.querySelector('.col-slider__cta-desktop');
+          var mobile = btn.querySelector('.col-slider__cta-mobile');
+          if (desktop) desktop.textContent = '✓ Ajouté !';
+          if (mobile) mobile.textContent = '✓ Ajouté !';
+          setTimeout(function() {
+            if (desktop) desktop.textContent = 'Ajouter au panier';
+            if (mobile) mobile.textContent = 'Voir Plus';
+          }, 1500);
+          document.dispatchEvent(new CustomEvent('cart:updated'));
+        })
+        .catch(function(err) { console.error(err); });
+      });
+    });
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "Collection Slider",
+  "tag": "section",
+  "settings": [
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Titre",
+      "default": "En ce moment"
+    },
+    {
+      "type": "collection",
+      "id": "collection",
+      "label": "Collection"
+    },
+    {
+      "type": "range",
+      "id": "products_count",
+      "label": "Nombre de produits",
+      "min": 2,
+      "max": 12,
+      "step": 1,
+      "default": 8
+    },
+    {
+      "type": "text",
+      "id": "cta_label",
+      "label": "Texte du bouton",
+      "default": "Voir les nouveautés"
+    },
+    {
+      "type": "url",
+      "id": "cta_url",
+      "label": "Lien du bouton"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Collection Slider"
+    }
+  ]
+}
+{% endschema %}

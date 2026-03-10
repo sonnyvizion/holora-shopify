@@ -1,0 +1,279 @@
+{% style %}
+  #reviews-{{ section.id }} .reviews-slider__track {
+    animation-duration: {{ section.settings.speed }}s;
+  }
+{% endstyle %}
+
+<div class="reviews-slider full-width" id="reviews-{{ section.id }}">
+
+  <div class="reviews-slider__header">
+    <div>
+      {% if section.settings.title != blank %}
+        <h2 class="reviews-slider__title">{{ section.settings.title }}</h2>
+      {% endif %}
+      {% if section.settings.subtitle != blank %}
+        <p class="reviews-slider__subtitle">{{ section.settings.subtitle }}</p>
+      {% endif %}
+    </div>
+  </div>
+
+  <div class="reviews-slider__title-line"></div>
+
+  <div class="reviews-slider__viewport">
+    <div class="reviews-slider__track" id="reviews-track-{{ section.id }}">
+      {% for block in section.blocks %}
+        <div class="reviews-slider__card" {{ block.shopify_attributes }}>
+          <div class="reviews-slider__card-top">
+            <span class="reviews-slider__rating">{{ block.settings.rating }}/5</span>
+            {% if block.settings.logo != blank %}
+              <img
+                class="reviews-slider__logo"
+                src="{{ block.settings.logo | image_url: width: 120 }}"
+                alt="logo"
+                loading="lazy"
+              >
+            {% elsif block.settings.logo_text != blank %}
+              <span class="reviews-slider__logo-text">{{ block.settings.logo_text }}</span>
+            {% endif %}
+          </div>
+          {% if block.settings.message != blank %}
+            <p class="reviews-slider__message">{{ block.settings.message }}</p>
+          {% endif %}
+        </div>
+      {% endfor %}
+      <!-- Duplicate for seamless loop -->
+      {% for block in section.blocks %}
+        <div class="reviews-slider__card" aria-hidden="true">
+          <div class="reviews-slider__card-top">
+            <span class="reviews-slider__rating">{{ block.settings.rating }}/5</span>
+            {% if block.settings.logo != blank %}
+              <img
+                class="reviews-slider__logo"
+                src="{{ block.settings.logo | image_url: width: 120 }}"
+                alt="logo"
+                loading="lazy"
+              >
+            {% elsif block.settings.logo_text != blank %}
+              <span class="reviews-slider__logo-text">{{ block.settings.logo_text }}</span>
+            {% endif %}
+          </div>
+          {% if block.settings.message != blank %}
+            <p class="reviews-slider__message">{{ block.settings.message }}</p>
+          {% endif %}
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+
+</div>
+
+{% stylesheet %}
+  .reviews-slider {
+    background: #1a1a1a;
+    padding: 4rem 0 4rem;
+    overflow: hidden;
+    font-family: 'CircularStd', sans-serif;
+  }
+
+  .reviews-slider__header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    padding: 0 3rem;
+    margin-bottom: 0;
+  }
+
+  .reviews-slider__title {
+    font-size: 2rem;
+    font-weight: 300;
+    letter-spacing: -0.03em;
+    color: #fff;
+    margin: 0;
+  }
+
+  .reviews-slider__subtitle {
+    font-size: 0.875rem;
+    color: #888;
+    margin: 0.3rem 0 0;
+    font-weight: 400;
+  }
+
+  .reviews-slider__title-line {
+    height: 1px;
+    background: linear-gradient(90deg, #D9D9D9, #242427);
+    margin: 1rem 3rem 1.5rem;
+  }
+
+  .reviews-slider__viewport {
+    width: 100%;
+    overflow: hidden;
+  }
+
+  .reviews-slider__track {
+    display: flex;
+    gap: 1rem;
+    width: max-content;
+    animation: reviews-scroll 30s linear infinite;
+  }
+
+  .reviews-slider__viewport:hover .reviews-slider__track {
+    animation-play-state: paused;
+  }
+
+  @keyframes reviews-scroll {
+    0%   { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+  }
+
+  .reviews-slider__card {
+    background: transparent;
+    border: 2px solid #ffffff;
+    border-radius: 16px;
+    padding: 1.4rem 1.9rem;
+    width: 350px;
+    height: 350px;
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    transition: border-color 0.2s;
+    box-sizing: border-box;
+  }
+
+  .reviews-slider__card:hover {
+    border-color: rgba(255, 255, 255, 0.5);
+  }
+
+  .reviews-slider__card-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+  }
+
+  .reviews-slider__rating {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: #fff;
+    letter-spacing: -0.03em;
+  }
+
+  .reviews-slider__logo {
+    height: 22px;
+    width: auto;
+    object-fit: contain;
+    filter: brightness(0) invert(1);
+    opacity: 0.85;
+  }
+
+  .reviews-slider__logo-text {
+    font-size: 1rem;
+    font-weight: 700;
+    color: #fff;
+    letter-spacing: -0.02em;
+  }
+
+  .reviews-slider__message {
+    font-size: 0.875rem;
+    color: #fff;
+    line-height: 1.5;
+    margin: 0;
+  }
+
+  @media (max-width: 768px) {
+    .reviews-slider {
+      padding: 3rem 0;
+    }
+
+    .reviews-slider__header {
+      padding: 0 1rem;
+    }
+
+    .reviews-slider__title-line {
+      margin-left: 1rem;
+      margin-right: 1rem;
+    }
+
+    .reviews-slider__title {
+      font-size: 1.5rem;
+    }
+
+    .reviews-slider__card {
+      width: 200px;
+      height: 200px;
+      padding: 1.1rem 1.2rem;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Reviews Slider",
+  "settings": [
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Titre",
+      "default": "Ce qu'ils en disent"
+    },
+    {
+      "type": "text",
+      "id": "subtitle",
+      "label": "Sous-titre",
+      "default": "Jusqu'à 3x par semaine"
+    },
+    {
+      "type": "range",
+      "id": "speed",
+      "label": "Vitesse défilement (s)",
+      "min": 10,
+      "max": 60,
+      "step": 5,
+      "default": 30,
+      "info": "Plus la valeur est basse, plus c'est rapide"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "review",
+      "name": "Avis",
+      "settings": [
+        {
+          "type": "text",
+          "id": "rating",
+          "label": "Note (ex: 5)",
+          "default": "5"
+        },
+        {
+          "type": "image_picker",
+          "id": "logo",
+          "label": "Logo plateforme"
+        },
+        {
+          "type": "text",
+          "id": "logo_text",
+          "label": "Texte logo (si pas d'image)",
+          "default": "voggt"
+        },
+        {
+          "type": "textarea",
+          "id": "message",
+          "label": "Message",
+          "default": "Livraison rapide ! Emballage soigné. Je recommande"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Reviews Slider",
+      "blocks": [
+        { "type": "review", "settings": { "rating": "5", "logo_text": "voggt", "message": "Livraison rapide ! Emballage soigné. Je recommande" } },
+        { "type": "review", "settings": { "rating": "5", "logo_text": "voggt", "message": "Super vendeur, cartes bien protégées et expédition rapide !" } },
+        { "type": "review", "settings": { "rating": "4", "logo_text": "voggt", "message": "Très bonne expérience, je reviendrai sans hésiter." } },
+        { "type": "review", "settings": { "rating": "5", "logo_text": "voggt", "message": "Parfait comme d'habitude, merci !" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

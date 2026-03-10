@@ -46,8 +46,9 @@
     justify-content: center;
     text-align: center;
     color: #fff;
-    padding: 6rem 2rem 3rem;
+    padding: 6rem 3rem 3rem;
   }
+
 
   .hero-banner__bg {
     position: absolute;
@@ -76,25 +77,26 @@
   }
 
   .hero-banner__subtitle {
-    font-size: 1rem;
-    font-weight: 400;
-    letter-spacing: 0.05em;
+    font-size: 24px;
+    font-weight: 200;
+    letter-spacing: -0.05em;
     margin-bottom: 0.75rem;
     opacity: 0.9;
   }
 
   .hero-banner__title {
     font-size: clamp(2.5rem, 6vw, 4rem);
-    font-weight: 700;
-    line-height: 1.15;
+    font-weight: 400;
+    line-height: 0.95;
+    letter-spacing: -0.05em;
     margin-bottom: 2rem;
   }
 
   .hero-banner__buttons {
     display: flex;
+    flex-direction: row;
     gap: 1rem;
     justify-content: center;
-    flex-wrap: wrap;
   }
 
   .hero-banner__btn {
@@ -103,16 +105,44 @@
     justify-content: center;
     padding: 0.9rem 2.2rem;
     border-radius: 999px;
-    font-size: 1rem;
-    font-weight: 600;
+    font-size: 18px;
+    font-weight: 400;
+    letter-spacing: -0.05em;
     text-decoration: none;
-    transition: opacity 0.2s, transform 0.2s;
+    transition: transform 0.2s;
     white-space: nowrap;
+    position: relative;
+    overflow: hidden;
   }
 
   .hero-banner__btn:hover {
-    opacity: 0.9;
     transform: translateY(-1px);
+  }
+
+  .hero-banner__btn .holo-layer,
+  .hero-banner__pill .holo-layer {
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s;
+    background: conic-gradient(
+      from var(--holo-angle, 0deg) at var(--holo-x, 50%) var(--holo-y, 50%),
+      rgba(255,0,128,0.12),
+      rgba(255,165,0,0.10),
+      rgba(255,255,0,0.08),
+      rgba(0,255,128,0.10),
+      rgba(0,180,255,0.12),
+      rgba(160,0,255,0.10),
+      rgba(255,0,128,0.12)
+    );
+    mix-blend-mode: overlay;
+  }
+
+  .hero-banner__btn:hover .holo-layer,
+  .hero-banner__pill:hover .holo-layer {
+    opacity: 1;
   }
 
   .hero-banner__btn--primary {
@@ -161,19 +191,29 @@
     position: relative;
     z-index: 2;
     display: flex;
-    gap: 0.75rem;
     flex-wrap: wrap;
+    gap: 0.75rem;
     justify-content: center;
     margin-top: auto;
     padding-top: 3rem;
+  }
+
+  @media (max-width: 768px) {
+    .hero-banner__pills {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      max-width: 400px;
+      width: 100%;
+    }
   }
 
   .hero-banner__pill {
     position: relative;
     display: inline-flex;
     align-items: center;
+    justify-content: center;
     padding: 0.6rem 1.4rem;
-    border-radius: 999px;
+    border-radius: 15px;
     background: rgba(255,255,255,0.08);
     color: #fff;
     font-size: 0.9rem;
@@ -212,19 +252,57 @@
       inset 0 -1px 0 rgba(0,0,0,0.08),
       0 4px 20px rgba(0,0,0,0.25);
   }
+  @media (max-width: 768px) {
+    .hero-banner__buttons {
+      flex-direction: column;
+      align-items: stretch;
+      width: 100%;
+      max-width: 320px;
+      margin: 0 auto;
+    }
+    .hero-banner__title {
+      font-size: 2rem;
+    }
+    .hero-banner__subtitle {
+      font-size: 14px;
+    }
+    .hero-banner__btn {
+      font-size: 14px;
+    }
+    .hero-banner__pill {
+      font-size: 14px;
+    }
+  }
 {% endstylesheet %}
 
 <script>
   (function() {
     var bg = document.querySelector('.hero-banner__bg');
     if (!bg) return;
-
     function onScroll() {
-      var offset = window.scrollY * 0.08;
-      bg.style.transform = 'translateY(' + offset + 'px)';
+      bg.style.transform = 'translateY(' + (window.scrollY * 0.08) + 'px)';
     }
-
     window.addEventListener('scroll', onScroll, { passive: true });
+  })();
+
+
+  (function() {
+    var holoEls = document.querySelectorAll('.hero-banner__btn, .hero-banner__pill');
+    holoEls.forEach(function(el) {
+      var layer = document.createElement('span');
+      layer.className = 'holo-layer';
+      el.appendChild(layer);
+
+      el.addEventListener('mousemove', function(e) {
+        var rect = el.getBoundingClientRect();
+        var x = ((e.clientX - rect.left) / rect.width) * 100;
+        var y = ((e.clientY - rect.top) / rect.height) * 100;
+        var angle = Math.atan2(e.clientY - rect.top - rect.height / 2, e.clientX - rect.left - rect.width / 2) * (180 / Math.PI);
+        el.style.setProperty('--holo-x', x + '%');
+        el.style.setProperty('--holo-y', y + '%');
+        el.style.setProperty('--holo-angle', angle + 'deg');
+      });
+    });
   })();
 </script>
 

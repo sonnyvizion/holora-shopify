@@ -2,6 +2,14 @@
   #stats-bar-{{ section.id }} {
     background-color: {{ section.settings.bg_color }};
   }
+  #stats-bar-{{ section.id }} .stats-bar__label {
+    background: linear-gradient(180deg, #767676 0%, #C1C1C1 50%, #767676 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    color: transparent;
+    display: inline-block;
+  }
 {% endstyle %}
 
 <div id="stats-bar-{{ section.id }}" class="stats-bar full-width">
@@ -16,7 +24,7 @@
           data-prefix="{{ block.settings.prefix }}"
           data-duration="{{ section.settings.duration }}"
         >{{ block.settings.prefix }}{{ block.settings.count_to }}{{ block.settings.suffix }}</span>
-        <span class="stats-bar__label">{{ block.settings.label }}</span>
+        <span class="stats-bar__label" style="background: linear-gradient(90deg, #767676 0%, #C1C1C1 50%, #767676 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; display: inline-block;">{{ block.settings.label }}</span>
       </div>
       {% unless forloop.last %}
         <div class="stats-bar__divider" aria-hidden="true"></div>
@@ -99,37 +107,59 @@
   }
 
   .stats-bar__value {
-    font-size: clamp(2rem, 5vw, 3rem);
-    font-weight: 700;
+    font-size: clamp(2rem, 3vw, 2.5rem);
+    font-weight: 400;
     color: #ffffff;
-    line-height: 1;
-    letter-spacing: -0.03em;
+    line-height: 1.2;
+    letter-spacing: -0.04em;
+    text-align: center;
   }
 
   .stats-bar__label {
     font-size: 0.875rem;
     font-weight: 400;
-    color: rgba(255,255,255,0.5);
     letter-spacing: 0.01em;
+    text-align: center;
+    background: linear-gradient(180deg, #767676 0%, #C1C1C1 50%, #767676 100%);
+    background-clip: text;
+    -webkit-background-clip: text;
+    color: transparent;
+    -webkit-text-fill-color: transparent;
   }
 
   .stats-bar__divider {
-    width: 1px;
-    height: 3rem;
-    background: rgba(255,255,255,0.12);
+    width: 2px;
+    height: 3.5rem;
+    background: linear-gradient(180deg, #242427 0%, #46464C 50%, #242427 100%);
     flex-shrink: 0;
   }
 
   @media (max-width: 640px) {
     .stats-bar__inner {
       flex-wrap: wrap;
-      gap: 2rem;
-    }
-    .stats-bar__divider {
-      display: none;
+      gap: 2rem 0;
     }
     .stats-bar__item {
-      flex: 0 0 calc(50% - 1rem);
+      flex: 0 0 calc(50% - 1px);
+      padding: 0 1rem;
+    }
+    .stats-bar__divider {
+      display: block;
+      width: 2px;
+      height: 3.5rem;
+      background: linear-gradient(180deg, #242427 0%, #46464C 50%, #242427 100%);
+    }
+    .stats-bar__inner > .stats-bar__divider:nth-child(4) {
+      width: 100%;
+      height: 2px;
+      background: linear-gradient(90deg, #242427 0%, #46464C 50%, #242427 100%);
+    }
+    .stats-bar__value {
+      font-size: clamp(1.8rem, 7vw, 2.5rem);
+      font-weight: 400;
+    }
+    .stats-bar__label {
+      font-size: 0.85rem;
     }
   }
 {% endstylesheet %}

@@ -1,0 +1,139 @@
+<div class="live-banner full-width" id="live-banner-{{ section.id }}">
+
+  <div class="live-banner__inner">
+
+    <div class="live-banner__text">
+      {% if section.settings.title != blank %}
+        <h2 class="live-banner__title">{{ section.settings.title }}</h2>
+      {% endif %}
+      {% if section.settings.subtitle != blank %}
+        <p class="live-banner__subtitle">{{ section.settings.subtitle }}</p>
+      {% endif %}
+    </div>
+
+    {% if section.settings.embed_code != blank %}
+      <div class="live-banner__embed-wrap">
+        <div class="live-banner__embed">
+          {{ section.settings.embed_code }}
+        </div>
+      </div>
+    {% else %}
+      <div class="live-banner__embed-wrap live-banner__embed-wrap--placeholder">
+        <div class="live-banner__embed-placeholder"></div>
+      </div>
+    {% endif %}
+
+  </div>
+
+</div>
+
+{% stylesheet %}
+  .live-banner {
+    background: #1e1e22;
+    font-family: 'CircularStd', sans-serif;
+    padding: 4rem 0 3rem;
+  }
+
+  .live-banner__inner {
+    max-width: 680px;
+    margin: 0 auto;
+    padding: 0 3rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .live-banner__text {
+    margin-bottom: 2rem;
+  }
+
+  .live-banner__title {
+    font-size: 2.5rem;
+    font-weight: 400;
+    color: #fff;
+    letter-spacing: -0.03em;
+    line-height: 1.15;
+    margin: 0 0 0.5rem;
+  }
+
+  .live-banner__subtitle {
+    font-size: 1rem;
+    font-weight: 400;
+    color: #999;
+    margin: 0;
+    letter-spacing: -0.01em;
+  }
+
+  .live-banner__embed-wrap {
+    width: 100%;
+    border-radius: 20px;
+    overflow: hidden;
+    background: #d4d4d4;
+    aspect-ratio: 16 / 9;
+  }
+
+  .live-banner__embed {
+    width: 100%;
+    height: 100%;
+  }
+
+  .live-banner__embed iframe,
+  .live-banner__embed video {
+    width: 100%;
+    height: 100%;
+    border: none;
+    display: block;
+  }
+
+  .live-banner__embed-placeholder {
+    width: 100%;
+    height: 100%;
+    background: #d4d4d4;
+  }
+
+  @media (max-width: 768px) {
+    .live-banner {
+      padding: 3rem 0 2rem;
+    }
+
+    .live-banner__inner {
+      padding: 0 1.25rem;
+    }
+
+    .live-banner__title {
+      font-size: 1.8rem;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Live Banner",
+  "settings": [
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Titre",
+      "default": "Nous sommes aussi en live !"
+    },
+    {
+      "type": "text",
+      "id": "subtitle",
+      "label": "Sous-titre",
+      "default": "Jusqu'à 3x par semaine"
+    },
+    {
+      "type": "html",
+      "id": "embed_code",
+      "label": "Code d'intégration",
+      "info": "Colle ici le code iframe de ton live (YouTube, TikTok, Twitch…)"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Live Banner"
+    }
+  ]
+}
+{% endschema %}
