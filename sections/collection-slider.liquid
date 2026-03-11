@@ -62,6 +62,9 @@
                 <p class="col-slider__collection-label">{{ label }}</p>
               {% endif %}
               <p class="col-slider__name">{{ product.title }}</p>
+              {% if col.image %}
+                <img class="col-slider__col-logo" src="{{ col.image | image_url: width: 300 }}" alt="{{ col.title }}" loading="lazy">
+              {% endif %}
               <p class="col-slider__price">{{ product.price | money }}</p>
               <a href="{{ product.url }}" class="col-slider__cta-mobile-btn">Voir Plus</a>
             </div>
@@ -279,6 +282,15 @@
     margin: 0;
     color: #111;
     line-height: 1.35;
+  }
+
+  .col-slider__col-logo {
+    display: block;
+    max-height: 28px;
+    width: auto;
+    max-width: 120px;
+    object-fit: contain;
+    margin: 0.35rem 0;
   }
 
   .col-slider__price {

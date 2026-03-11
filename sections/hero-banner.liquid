@@ -27,8 +27,12 @@
   {% if pills.size > 0 %}
     <div class="hero-banner__pills">
       {% for block in pills %}
-        <a href="{{ block.settings.url }}" class="hero-banner__pill" {{ block.shopify_attributes }}>
-          {{ block.settings.label }}
+        <a href="{{ block.settings.collection.url }}" class="hero-banner__pill {% if block.settings.image %}hero-banner__pill--image{% endif %}" style="--pill-img-h: {{ block.settings.image_size | default: 40 }}px" {{ block.shopify_attributes }}>
+          {% if block.settings.image %}
+            <img class="hero-banner__pill-img" src="{{ block.settings.image | image_url: width: 400 }}" alt="{{ block.settings.label | escape }}" loading="lazy">
+          {% else %}
+            {{ block.settings.label }}
+          {% endif %}
         </a>
       {% endfor %}
     </div>
@@ -207,6 +211,19 @@
     }
   }
 
+  .hero-banner__pill--image {
+    padding: 0.45rem 0.75rem;
+  }
+
+  .hero-banner__pill-img {
+    height: var(--pill-img-h, 40px);
+    width: auto;
+    max-width: 180px;
+    object-fit: contain;
+    display: block;
+    flex-shrink: 0;
+  }
+
   .hero-banner__pill {
     position: relative;
     display: inline-flex;
@@ -371,9 +388,23 @@
           "default": "Catégorie"
         },
         {
-          "type": "url",
-          "id": "url",
-          "label": "Lien"
+          "type": "collection",
+          "id": "collection",
+          "label": "Collection"
+        },
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Image (optionnel)"
+        },
+        {
+          "type": "range",
+          "id": "image_size",
+          "label": "Hauteur image (px)",
+          "min": 20,
+          "max": 80,
+          "step": 2,
+          "default": 40
         }
       ]
     }

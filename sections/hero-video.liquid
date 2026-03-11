@@ -1,0 +1,426 @@
+<section class="hero-video full-width" id="hero-video-{{ section.id }}">
+
+  {% if section.settings.video != blank %}
+  <video
+    class="hero-video__video"
+    src="{{ section.settings.video.sources[0].url }}"
+    autoplay
+    muted
+    playsinline
+    preload="auto"
+  ></video>
+  {% endif %}
+
+  <div class="hero-video__overlay"></div>
+
+  <div class="hero-video__content">
+    {% if section.settings.subtitle != blank %}
+      <p class="hero-video__subtitle">{{ section.settings.subtitle }}</p>
+    {% endif %}
+
+    {% if section.settings.title != blank %}
+      <h1 class="hero-video__title">{{ section.settings.title }}</h1>
+    {% endif %}
+
+    <div class="hero-video__buttons">
+      {% if section.settings.btn_primary_label != blank %}
+        <a href="{{ section.settings.btn_primary_url }}" class="hero-video__btn hero-video__btn--primary">
+          {{ section.settings.btn_primary_label }}
+        </a>
+      {% endif %}
+      {% if section.settings.btn_secondary_label != blank %}
+        <a href="{{ section.settings.btn_secondary_url }}" class="hero-video__btn hero-video__btn--secondary">
+          {{ section.settings.btn_secondary_label }}
+        </a>
+      {% endif %}
+    </div>
+  </div>
+
+  {% assign pills = section.blocks | where: 'type', 'category_pill' %}
+  {% if pills.size > 0 %}
+    <div class="hero-video__pills">
+      {% for block in pills %}
+        <a href="{{ block.settings.collection.url }}" class="hero-video__pill {% if block.settings.image %}hero-video__pill--image{% endif %}" style="--pill-img-h: {{ block.settings.image_size | default: 40 }}px" {{ block.shopify_attributes }}>
+          {% if block.settings.image %}
+            <img class="hero-video__pill-img" src="{{ block.settings.image | image_url: width: 400 }}" alt="{{ block.settings.label | escape }}" loading="lazy">
+          {% else %}
+            {{ block.settings.label }}
+          {% endif %}
+        </a>
+      {% endfor %}
+    </div>
+  {% endif %}
+
+</section>
+
+{% stylesheet %}
+  .hero-video {
+    position: relative;
+    min-height: 100vh;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    color: #fff;
+    padding: 6rem 3rem 3rem;
+    font-family: 'CircularStd', sans-serif;
+  }
+
+  .hero-video__video {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: 0;
+  }
+
+  .hero-video__overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to bottom, rgba(0,0,0,0.15) 0%, rgba(0,0,0,0.35) 60%, rgba(0,0,0,0.6) 100%);
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  .hero-video__content {
+    position: relative;
+    z-index: 2;
+    max-width: 800px;
+    margin-top: auto;
+    opacity: 0;
+    transform: translateY(16px);
+    transition: opacity 0.8s ease, transform 0.8s ease;
+  }
+
+  .hero-video__content.is-visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .hero-video__subtitle {
+    font-size: 24px;
+    font-weight: 200;
+    letter-spacing: -0.05em;
+    margin-bottom: 0.75rem;
+    opacity: 0.9;
+  }
+
+  .hero-video__title {
+    font-size: clamp(2.5rem, 6vw, 4rem);
+    font-weight: 400;
+    line-height: 0.95;
+    letter-spacing: -0.05em;
+    margin-bottom: 2rem;
+  }
+
+  .hero-video__buttons {
+    display: flex;
+    flex-direction: row;
+    gap: 1rem;
+    justify-content: center;
+  }
+
+  .hero-video__btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.9rem 2.2rem;
+    border-radius: 999px;
+    font-size: 18px;
+    font-weight: 400;
+    letter-spacing: -0.05em;
+    text-decoration: none;
+    transition: transform 0.2s;
+    white-space: nowrap;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero-video__btn:hover { transform: translateY(-1px); }
+
+  .hero-video__btn--primary {
+    background: #fff;
+    color: #111;
+  }
+
+  .hero-video__btn--secondary {
+    background: rgba(255,255,255,0.08);
+    color: #fff;
+    border: 1px solid rgba(255,255,255,0.25);
+    backdrop-filter: blur(24px) saturate(180%);
+    -webkit-backdrop-filter: blur(24px) saturate(180%);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.35), 0 4px 24px rgba(0,0,0,0.15);
+  }
+
+  .hero-video__btn--secondary:hover {
+    background: rgba(255,255,255,0.14);
+    border-color: rgba(255,255,255,0.4);
+  }
+
+  .hero-video__pills {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    justify-content: center;
+    margin-top: auto;
+    padding-top: 3rem;
+    opacity: 0;
+    transform: translateY(16px);
+    transition: opacity 0.8s ease 0.2s, transform 0.8s ease 0.2s;
+  }
+
+  .hero-video__pills.is-visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .hero-video__pill--image {
+    padding: 0.45rem 0.75rem;
+  }
+
+  .hero-video__pill-img {
+    height: var(--pill-img-h, 40px);
+    width: auto;
+    max-width: 180px;
+    object-fit: contain;
+    display: block;
+    flex-shrink: 0;
+  }
+
+  .hero-video__pill {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.6rem 1.4rem;
+    border-radius: 15px;
+    background: rgba(255,255,255,0.08);
+    color: #fff;
+    font-size: 0.9rem;
+    font-weight: 500;
+    text-decoration: none;
+    border: 1px solid rgba(255,255,255,0.2);
+    backdrop-filter: blur(24px) saturate(160%);
+    -webkit-backdrop-filter: blur(24px) saturate(160%);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.28), 0 2px 12px rgba(0,0,0,0.2);
+    transition: background 0.2s, border-color 0.2s;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero-video__pill:hover {
+    background: rgba(255,255,255,0.14);
+    border-color: rgba(255,255,255,0.35);
+  }
+
+  .hero-video__btn .holo-layer {
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s;
+    background: conic-gradient(
+      from var(--holo-angle, 0deg) at var(--holo-x, 50%) var(--holo-y, 50%),
+      rgba(124,58,237,0.0), rgba(167,139,250,0.35), rgba(202,148,249,0.45),
+      rgba(232,121,249,0.3), rgba(167,139,250,0.4), rgba(109,40,217,0.2),
+      rgba(167,139,250,0.35), rgba(124,58,237,0.0)
+    );
+    mix-blend-mode: screen;
+  }
+
+  .hero-video__pill .holo-layer {
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s;
+    background: conic-gradient(
+      from var(--holo-angle, 0deg) at var(--holo-x, 50%) var(--holo-y, 50%),
+      rgba(255,0,128,0.12), rgba(255,165,0,0.10), rgba(255,255,0,0.08),
+      rgba(0,255,128,0.10), rgba(0,180,255,0.12), rgba(160,0,255,0.10),
+      rgba(255,0,128,0.12)
+    );
+    mix-blend-mode: overlay;
+  }
+
+  .hero-video__btn:hover .holo-layer,
+  .hero-video__pill:hover .holo-layer { opacity: 1; }
+
+  @media (max-width: 768px) {
+    .hero-video__pills {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      max-width: 400px;
+      width: 100%;
+    }
+    .hero-video__buttons {
+      flex-direction: column;
+      align-items: stretch;
+      width: 100%;
+      max-width: 320px;
+      margin: 0 auto;
+    }
+    .hero-video__title { font-size: 2rem; }
+    .hero-video__subtitle { font-size: 14px; }
+    .hero-video__btn { font-size: 14px; }
+    .hero-video__pill { font-size: 14px; }
+  }
+{% endstylesheet %}
+
+<script>
+(function() {
+  var section = document.getElementById('hero-video-{{ section.id }}');
+  if (!section) return;
+
+  var video   = section.querySelector('.hero-video__video');
+  var content = section.querySelector('.hero-video__content');
+  var pills   = section.querySelector('.hero-video__pills');
+  var textDelay = {{ section.settings.text_delay | times: 1000 | round }};
+
+  // Fade in text & pills after delay
+  setTimeout(function() {
+    if (content) content.classList.add('is-visible');
+    if (pills)   pills.classList.add('is-visible');
+  }, textDelay);
+
+  // Loop last 5 seconds when video ends
+  if (video) {
+    video.addEventListener('timeupdate', function() {
+      if (video.duration && video.currentTime >= video.duration - 5 && !video._looping) {
+        video._looping = true;
+      }
+    });
+    video.addEventListener('ended', function() {
+      if (video._looping) {
+        video.currentTime = video.duration - 5;
+        video.play();
+      }
+    });
+  }
+
+  // Holo effect on buttons & pills
+  section.querySelectorAll('.hero-video__btn, .hero-video__pill').forEach(function(el) {
+    var layer = document.createElement('span');
+    layer.className = 'holo-layer';
+    el.appendChild(layer);
+    el.addEventListener('mousemove', function(e) {
+      var rect = el.getBoundingClientRect();
+      var x = ((e.clientX - rect.left) / rect.width) * 100;
+      var y = ((e.clientY - rect.top) / rect.height) * 100;
+      var angle = Math.atan2(e.clientY - rect.top - rect.height / 2, e.clientX - rect.left - rect.width / 2) * (180 / Math.PI);
+      el.style.setProperty('--holo-x', x + '%');
+      el.style.setProperty('--holo-y', y + '%');
+      el.style.setProperty('--holo-angle', angle + 'deg');
+    });
+  });
+})();
+</script>
+
+{% schema %}
+{
+  "name": "Hero Video",
+  "tag": "div",
+  "settings": [
+    {
+      "type": "video",
+      "id": "video",
+      "label": "Vidéo de fond"
+    },
+    {
+      "type": "range",
+      "id": "text_delay",
+      "label": "Délai apparition texte (secondes)",
+      "min": 0.5,
+      "max": 5,
+      "step": 0.5,
+      "default": 1.5
+    },
+    {
+      "type": "text",
+      "id": "subtitle",
+      "label": "Sous-titre",
+      "default": "Boutique TCG · Pokémon & One Piece"
+    },
+    {
+      "type": "textarea",
+      "id": "title",
+      "label": "Titre",
+      "default": "Bienvenue chez Holora\nla puissance du jeu"
+    },
+    {
+      "type": "header",
+      "content": "Bouton principal"
+    },
+    {
+      "type": "text",
+      "id": "btn_primary_label",
+      "label": "Texte",
+      "default": "Voir les nouveautés"
+    },
+    {
+      "type": "url",
+      "id": "btn_primary_url",
+      "label": "Lien"
+    },
+    {
+      "type": "header",
+      "content": "Bouton secondaire"
+    },
+    {
+      "type": "text",
+      "id": "btn_secondary_label",
+      "label": "Texte",
+      "default": "Cartes gradées"
+    },
+    {
+      "type": "url",
+      "id": "btn_secondary_url",
+      "label": "Lien"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "category_pill",
+      "name": "Catégorie",
+      "settings": [
+        {
+          "type": "text",
+          "id": "label",
+          "label": "Nom",
+          "default": "Catégorie"
+        },
+        {
+          "type": "collection",
+          "id": "collection",
+          "label": "Collection"
+        },
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Image (optionnel)"
+        },
+        {
+          "type": "range",
+          "id": "image_size",
+          "label": "Hauteur image (px)",
+          "min": 20,
+          "max": 80,
+          "step": 2,
+          "default": 40
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Hero Video"
+    }
+  ]
+}
+{% endschema %}

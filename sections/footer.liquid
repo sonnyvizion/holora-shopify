@@ -1,56 +1,244 @@
-<footer>
-  <div class="footer__copyright">
-    &copy;
-    {{ 'now' | date: '%Y' }}
-    {{ shop.name | link_to: routes.root_url }}, {{ powered_by_link }}
-  </div>
+<footer class="site-footer full-width">
+  <div class="site-footer__inner">
 
-  <div class="footer__links">
-    {% for link in section.settings.menu.links %}
-      {{ link.title | link_to: link.url }}
-    {% endfor %}
-  </div>
-
-  <div class="footer__payment">
-    {% if section.settings.show_payment_icons %}
-      {% for type in shop.enabled_payment_types %}
-        {{ type | payment_type_svg_tag }}
+    <!-- Top: nav columns -->
+    <div class="site-footer__top">
+      {% for i in (1..3) %}
+        {% assign col_title = 'col_' | append: i | append: '_title' %}
+        {% assign col_menu  = 'col_' | append: i | append: '_menu' %}
+        {% assign title = section.settings[col_title] %}
+        {% assign menu  = section.settings[col_menu] %}
+        {% if title != blank or menu != blank %}
+          <div class="site-footer__col">
+            {% if title != blank %}
+              <p class="site-footer__col-title">{{ title }}</p>
+            {% endif %}
+            {% if menu != blank %}
+              <ul class="site-footer__col-links">
+                {% for link in linklists[menu].links %}
+                  <li><a href="{{ link.url }}">{{ link.title }}</a></li>
+                {% endfor %}
+              </ul>
+            {% endif %}
+          </div>
+        {% endif %}
       {% endfor %}
-    {% endif %}
+    </div>
+
+    <!-- Bottom: wordmark + social -->
+    <div class="site-footer__bottom">
+      <span class="site-footer__wordmark">{{ shop.name }}</span>
+      <div class="site-footer__social">
+        {% if section.settings.tiktok_url != blank %}
+          <a href="{{ section.settings.tiktok_url }}" class="site-footer__social-link" aria-label="TikTok" target="_blank" rel="noopener">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-2.88 2.5 2.89 2.89 0 0 1-2.89-2.89 2.89 2.89 0 0 1 2.89-2.89c.28 0 .54.04.79.1V9.01a6.33 6.33 0 0 0-.79-.05 6.34 6.34 0 0 0-6.34 6.34 6.34 6.34 0 0 0 6.34 6.34 6.34 6.34 0 0 0 6.33-6.34V8.69a8.18 8.18 0 0 0 4.78 1.52V6.75a4.85 4.85 0 0 1-1.01-.06z"/></svg>
+          </a>
+        {% endif %}
+        {% if section.settings.instagram_url != blank %}
+          <a href="{{ section.settings.instagram_url }}" class="site-footer__social-link" aria-label="Instagram" target="_blank" rel="noopener">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 1 0 0 12.324 6.162 6.162 0 0 0 0-12.324zM12 16a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm6.406-11.845a1.44 1.44 0 1 0 0 2.881 1.44 1.44 0 0 0 0-2.881z"/></svg>
+          </a>
+        {% endif %}
+        {% if section.settings.facebook_url != blank %}
+          <a href="{{ section.settings.facebook_url }}" class="site-footer__social-link" aria-label="Facebook" target="_blank" rel="noopener">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+          </a>
+        {% endif %}
+      </div>
+    </div>
+
+    <!-- Bar: divider + copyright -->
+    <div class="site-footer__bar">
+      <span>{{ 'now' | date: '%Y' }}— {{ section.settings.copyright | default: 'Toute reproduction interdite' }}</span>
+    </div>
+
   </div>
 </footer>
 
 {% stylesheet %}
-  footer {
+  .site-footer {
+    background: #fff;
+    font-family: 'CircularStd', sans-serif;
+    padding: 4rem 0 0;
+  }
+
+  .site-footer__inner {
+    max-width: var(--page-width, 1200px);
+    margin: 0 auto;
+    padding: 0 var(--page-margin, 3rem);
+  }
+
+  /* Top nav columns — right-aligned */
+  .site-footer__top {
     display: flex;
-    justify-content: space-between;
-    margin-top: 2rem;
+    gap: 4rem;
+    justify-content: flex-end;
+    padding-bottom: 4rem;
   }
-  footer a {
+
+  .site-footer__col-title {
+    font-size: 0.8rem;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    color: #111;
+    margin: 0 0 1rem;
+    text-transform: none;
+  }
+
+  .site-footer__col-links {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.55rem;
+  }
+
+  .site-footer__col-links a {
+    font-size: 0.875rem;
+    color: #555;
     text-decoration: none;
-    color: var(--color-foreground);
+    transition: color 0.15s;
   }
-  footer .footer__links,
-  footer .footer__payment {
+
+  .site-footer__col-links a:hover {
+    color: #111;
+  }
+
+  /* Bottom: wordmark + social */
+  .site-footer__bottom {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    padding-bottom: 1.5rem;
+  }
+
+  .site-footer__wordmark {
+    font-size: clamp(4rem, 10vw, 7rem);
+    font-weight: 700;
+    letter-spacing: -0.04em;
+    color: #111;
+    line-height: 1;
+    display: block;
+  }
+
+  .site-footer__social {
     display: flex;
     gap: 1rem;
+    align-items: center;
+    padding-bottom: 0.5rem;
+  }
+
+  .site-footer__social-link {
+    color: #111;
+    display: flex;
+    align-items: center;
+    transition: opacity 0.15s;
+  }
+
+  .site-footer__social-link:hover {
+    opacity: 0.5;
+  }
+
+  /* Bar */
+  .site-footer__bar {
+    border-top: 1px solid #e5e5e5;
+    padding: 1.25rem 0;
+    text-align: center;
+    font-size: 0.8rem;
+    color: #888;
+  }
+
+  @media (max-width: 768px) {
+    .site-footer__top {
+      flex-direction: column;
+      gap: 2.5rem;
+      justify-content: flex-start;
+    }
+
+    .site-footer__wordmark {
+      font-size: clamp(3rem, 15vw, 5rem);
+    }
   }
 {% endstylesheet %}
 
 {% schema %}
 {
-  "name": "t:general.footer",
+  "name": "Footer",
   "settings": [
     {
-      "type": "link_list",
-      "id": "menu",
-      "label": "t:labels.menu"
+      "type": "header",
+      "content": "Colonne 1"
     },
     {
-      "type": "checkbox",
-      "id": "show_payment_icons",
-      "label": "t:labels.show_payment_icons",
-      "default": true
+      "type": "text",
+      "id": "col_1_title",
+      "label": "Titre",
+      "default": "Navigation"
+    },
+    {
+      "type": "link_list",
+      "id": "col_1_menu",
+      "label": "Menu"
+    },
+    {
+      "type": "header",
+      "content": "Colonne 2"
+    },
+    {
+      "type": "text",
+      "id": "col_2_title",
+      "label": "Titre",
+      "default": "Aide"
+    },
+    {
+      "type": "link_list",
+      "id": "col_2_menu",
+      "label": "Menu"
+    },
+    {
+      "type": "header",
+      "content": "Colonne 3"
+    },
+    {
+      "type": "text",
+      "id": "col_3_title",
+      "label": "Titre",
+      "default": "Légal"
+    },
+    {
+      "type": "link_list",
+      "id": "col_3_menu",
+      "label": "Menu"
+    },
+    {
+      "type": "header",
+      "content": "Réseaux sociaux"
+    },
+    {
+      "type": "url",
+      "id": "tiktok_url",
+      "label": "TikTok"
+    },
+    {
+      "type": "url",
+      "id": "instagram_url",
+      "label": "Instagram"
+    },
+    {
+      "type": "url",
+      "id": "facebook_url",
+      "label": "Facebook"
+    },
+    {
+      "type": "header",
+      "content": "Copyright"
+    },
+    {
+      "type": "text",
+      "id": "copyright",
+      "label": "Texte copyright",
+      "default": "Toute reproduction interdite"
     }
   ]
 }

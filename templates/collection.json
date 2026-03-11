@@ -1,17 +1,91 @@
-/*
- * ------------------------------------------------------------
- * IMPORTANT: The contents of this file are auto-generated.
- *
- * This file may be updated by the Shopify admin theme editor
- * or related systems. Please exercise caution as any changes
- * made to this file may be overwritten.
- * ------------------------------------------------------------
- */
 {
   "sections": {
     "main": {
       "type": "collection",
-      "settings": {}
+      "settings": {
+        "products_per_page": 24,
+        "pills_title": "Produits disponibles",
+        "cards_title": "Les cartes à chasser"
+      },
+      "blocks": {
+        "stat-1": {
+          "type": "stat",
+          "settings": {
+            "number": "—",
+            "label": "Cartes au total"
+          }
+        },
+        "stat-2": {
+          "type": "stat",
+          "settings": {
+            "number": "—",
+            "label": "Raretés spéciales"
+          }
+        },
+        "stat-3": {
+          "type": "stat",
+          "settings": {
+            "number": "—",
+            "label": "Illustrations SR"
+          }
+        },
+        "pill-1": {
+          "type": "product_pill",
+          "settings": {
+            "label": "Booster Box",
+            "url": ""
+          }
+        },
+        "pill-2": {
+          "type": "product_pill",
+          "settings": {
+            "label": "ETB",
+            "url": ""
+          }
+        },
+        "pill-3": {
+          "type": "product_pill",
+          "settings": {
+            "label": "Coffret",
+            "url": ""
+          }
+        },
+        "card-1": {
+          "type": "card_highlight",
+          "settings": {
+            "name": "Carte emblématique",
+            "desc": "carte la plus recherchée du set",
+            "highlighted": true
+          }
+        },
+        "card-2": {
+          "type": "card_highlight",
+          "settings": {
+            "name": "Illustration Rare SR",
+            "desc": "illustration spéciale très demandée",
+            "highlighted": false
+          }
+        },
+        "card-3": {
+          "type": "card_highlight",
+          "settings": {
+            "name": "Gold Rare",
+            "desc": "carte dorée de fin de set",
+            "highlighted": false
+          }
+        }
+      },
+      "block_order": [
+        "stat-1",
+        "stat-2",
+        "stat-3",
+        "pill-1",
+        "pill-2",
+        "pill-3",
+        "card-1",
+        "card-2",
+        "card-3"
+      ]
     }
   },
   "order": [

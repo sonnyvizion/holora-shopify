@@ -67,6 +67,40 @@
 
 </div>
 
+<script>
+(function() {
+  var track    = document.getElementById('reviews-track-{{ section.id }}');
+  var viewport = track && track.parentElement;
+  if (!track) return;
+
+  // Original cards (not clones)
+  var originals = track.querySelectorAll('.reviews-slider__card:not([aria-hidden="true"])');
+  var gap = 16; // 1rem
+  var setWidth = 0;
+  originals.forEach(function(c) { setWidth += c.offsetWidth + gap; });
+
+  var pos    = 0;
+  var paused = false;
+  var speedPx = setWidth / ({{ section.settings.speed }} * 60); // px per frame
+
+  function tick() {
+    if (!paused) {
+      pos += speedPx;
+      if (pos >= setWidth) pos -= setWidth;
+      track.style.transform = 'translateX(-' + pos + 'px)';
+    }
+    requestAnimationFrame(tick);
+  }
+
+  requestAnimationFrame(tick);
+
+  if (viewport) {
+    viewport.addEventListener('mouseenter', function() { paused = true; });
+    viewport.addEventListener('mouseleave', function() { paused = false; });
+  }
+})();
+</script>
+
 {% stylesheet %}
   .reviews-slider {
     background: #1a1a1a;
@@ -113,16 +147,7 @@
     display: flex;
     gap: 1rem;
     width: max-content;
-    animation: reviews-scroll 30s linear infinite;
-  }
-
-  .reviews-slider__viewport:hover .reviews-slider__track {
-    animation-play-state: paused;
-  }
-
-  @keyframes reviews-scroll {
-    0%   { transform: translateX(0); }
-    100% { transform: translateX(-50%); }
+    will-change: transform;
   }
 
   .reviews-slider__card {
@@ -152,8 +177,8 @@
   }
 
   .reviews-slider__rating {
-    font-size: 1.3rem;
-    font-weight: 700;
+    font-size: 2rem;
+    font-weight: 400;
     color: #fff;
     letter-spacing: -0.03em;
   }
@@ -174,9 +199,9 @@
   }
 
   .reviews-slider__message {
-    font-size: 0.875rem;
+    font-size: 1.3rem;
     color: #fff;
-    line-height: 1.5;
+    line-height: 1;
     margin: 0;
   }
 
@@ -195,7 +220,7 @@
     }
 
     .reviews-slider__title {
-      font-size: 1.5rem;
+      font-size: 2.5rem;
     }
 
     .reviews-slider__card {
