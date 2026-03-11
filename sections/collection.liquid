@@ -34,7 +34,10 @@
 
   <!-- Grid -->
   <div class="coll__grid">
-    {% for product in collection.products %}
+    {% assign available_products = collection.products | where: 'available', true %}
+    {% assign unavailable_products = collection.products | where: 'available', false %}
+    {% assign sorted_products = available_products | concat: unavailable_products %}
+    {% for product in sorted_products %}
       {% assign total_inventory = 0 %}
       {% for variant in product.variants %}
         {% assign total_inventory = total_inventory | plus: variant.inventory_quantity %}

@@ -176,7 +176,23 @@
 <nav id="mobile-nav" class="mobile-nav" aria-hidden="true">
   <ul class="mobile-nav__list">
     {% for link in section.settings.menu.links %}
-      <li><a href="{{ link.url }}" class="mobile-nav__link">{{ link.title }}</a></li>
+      <li class="mobile-nav__item">
+        {% if link.links.size > 0 %}
+          <button class="mobile-nav__link mobile-nav__toggle" aria-expanded="false">
+            {{ link.title }}
+            <svg class="mobile-nav__chevron" width="16" height="16" viewBox="0 0 16 16" fill="none">
+              <path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </button>
+          <ul class="mobile-nav__sub">
+            {% for sub in link.links %}
+              <li><a href="{{ sub.url }}" class="mobile-nav__sub-link">{{ sub.title }}</a></li>
+            {% endfor %}
+          </ul>
+        {% else %}
+          <a href="{{ link.url }}" class="mobile-nav__link">{{ link.title }}</a>
+        {% endif %}
+      </li>
     {% endfor %}
   </ul>
   <div class="mobile-nav__footer">
@@ -212,17 +228,30 @@
   var activeInput  = null;
   var debounceTimer;
 
-  // --- Sticky header background ---
+  // --- Sticky header background + hide on scroll down ---
   var header = document.querySelector('.site-header');
+  var lastScrollY = window.scrollY;
+
   function updateHeaderBg() {
-    // Skip sections with no layout height (e.g. fixed header section)
+    var scrollY = window.scrollY;
+
+    // Background after hero
     var sections = document.querySelectorAll('.shopify-section');
     var heroEl = null;
     for (var i = 0; i < sections.length; i++) {
       if (sections[i].offsetHeight > 100) { heroEl = sections[i]; break; }
     }
     var threshold = heroEl ? heroEl.offsetHeight : window.innerHeight;
-    header.classList.toggle('is-scrolled', window.scrollY >= threshold);
+    header.classList.toggle('is-scrolled', scrollY >= threshold);
+
+    // Hide/show on scroll direction (only after 80px from top)
+    if (scrollY > 80) {
+      header.classList.toggle('is-hidden', scrollY > lastScrollY);
+    } else {
+      header.classList.remove('is-hidden');
+    }
+
+    lastScrollY = scrollY;
   }
   window.addEventListener('scroll', updateHeaderBg, { passive: true });
   updateHeaderBg();
@@ -411,6 +440,15 @@
   // Listen for add-to-cart events from product pages
   document.addEventListener('cart:refresh', fetchCart);
 
+  // --- Mobile nav sub-menus ---
+  document.querySelectorAll('.mobile-nav__toggle').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      var item = btn.closest('.mobile-nav__item');
+      var isOpen = item.classList.toggle('is-open');
+      btn.setAttribute('aria-expanded', String(isOpen));
+    });
+  });
+
   // --- Mobile search button ---
   if (mobilebtn) {
     mobilebtn.addEventListener('click', function() {
@@ -567,11 +605,37 @@
     right: 0;
     z-index: 200;
     padding: 1.25rem 2rem;
-    transition: background 0.3s ease;
+    transition: background 0.3s ease, transform 0.3s ease;
   }
 
   .site-header.is-scrolled {
     background: #242427;
+  }
+
+  .site-header__logo,
+  .site-header__actions {
+    transition: opacity 0.3s ease, transform 0.3s ease;
+  }
+
+  .site-header.is-hidden .site-header__logo,
+  .site-header.is-hidden .site-header__actions {
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(-6px);
+  }
+
+  .site-header.is-scrolled.is-hidden {
+    background: transparent;
+  }
+
+  @media (max-width: 768px) {
+    .site-header.is-hidden .site-header__logo,
+    .site-header.is-hidden .site-header__actions {
+      transform: none;
+    }
+    .site-header.is-hidden {
+      transform: translateY(-100%);
+    }
   }
 
   .site-header__inner {
@@ -1195,9 +1259,12 @@
     z-index: 160;
     transform: translateX(100%);
     transition: transform 0.3s ease;
-    padding: 6rem 2rem 2rem;
-    overflow: hidden;
+    padding: 6rem 2rem 6rem;
+    overflow-y: auto;
+    scrollbar-width: none;
   }
+
+  .mobile-nav::-webkit-scrollbar { display: none; }
 
 
   .mobile-nav.is-open {
@@ -1215,16 +1282,64 @@
   }
 
   .mobile-nav__link {
-    display: block;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
     color: #fff;
     text-decoration: none;
     font-size: 1.1rem;
     font-weight: 500;
     padding: 0.75rem 0;
     border-bottom: 1px solid rgba(255,255,255,0.08);
+    background: none;
+    border-left: none;
+    border-right: none;
+    border-top: none;
+    cursor: pointer;
+    text-align: left;
+    font-family: 'CircularStd', sans-serif;
+    letter-spacing: inherit;
   }
 
   .mobile-nav__link:hover { color: rgba(255,255,255,0.7); }
+
+  .mobile-nav__chevron {
+    flex-shrink: 0;
+    transition: transform 0.25s ease;
+    opacity: 0.5;
+  }
+
+  .mobile-nav__item.is-open .mobile-nav__chevron {
+    transform: rotate(180deg);
+    opacity: 1;
+  }
+
+  .mobile-nav__sub {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    max-height: 0;
+    transition: max-height 0.3s ease;
+  }
+
+  .mobile-nav__item.is-open .mobile-nav__sub {
+    max-height: 600px;
+  }
+
+  .mobile-nav__sub-link {
+    display: block;
+    color: rgba(255,255,255,0.65);
+    text-decoration: none;
+    font-size: 0.95rem;
+    font-weight: 400;
+    padding: 0.6rem 0 0.6rem 1rem;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+    transition: color 0.15s;
+  }
+
+  .mobile-nav__sub-link:hover { color: #fff; }
 
   .mobile-nav__footer {
     position: absolute;

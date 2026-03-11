@@ -24,6 +24,45 @@
     {% render 'meta-tags' %}
 
     {{ content_for_header }}
+
+    {%- if request.page_type == 'index' -%}
+      <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@graph": [
+          {
+            "@type": "WebSite",
+            "@id": "{{ shop.url }}/#website",
+            "name": {{ shop.name | json }},
+            "url": {{ shop.url | json }},
+            "description": {{ shop.description | default: 'Boutique TCG Pokémon & One Piece – Boosters, cartes gradées, displays' | json }},
+            "inLanguage": "fr-FR",
+            "potentialAction": {
+              "@type": "SearchAction",
+              "target": {
+                "@type": "EntryPoint",
+                "urlTemplate": "{{ shop.url }}/search?q={search_term_string}"
+              },
+              "query-input": "required name=search_term_string"
+            }
+          },
+          {
+            "@type": "Organization",
+            "@id": "{{ shop.url }}/#organization",
+            "name": {{ shop.name | json }},
+            "url": {{ shop.url | json }},
+            "logo": {
+              "@type": "ImageObject",
+              "url": "{{ shop.url }}/cdn/shop/files/logo.png"
+            },
+            "sameAs": [
+              "https://www.instagram.com/holora.tcg/"
+            ]
+          }
+        ]
+      }
+      </script>
+    {%- endif -%}
   </head>
 
   <body>

@@ -126,6 +126,25 @@
 
       {% endform %}
 
+      <!-- Notify me when back in stock -->
+      <div class="pdp__notify" id="pdp-notify-{{ product.id }}"{% if current_variant.available %} hidden{% endif %}>
+        <p class="pdp__notify-title">Être alerté du restock</p>
+        <div class="pdp__notify-row">
+          <input
+            type="email"
+            id="pdp-notify-email-{{ product.id }}"
+            class="pdp__notify-input"
+            placeholder="ton@email.com"
+            autocomplete="email"
+          >
+          <button type="button" class="pdp__notify-btn" data-product="{{ product.title | escape }}" data-product-id="{{ product.id }}">
+            Me notifier
+          </button>
+        </div>
+        <p class="pdp__notify-fine">En soumettant, tu acceptes de recevoir les actualités Holora.</p>
+        <p class="pdp__notify-success" hidden>✓ Tu seras notifié(e) dès que le produit est de retour.</p>
+      </div>
+
       <!-- Divider -->
       <div class="pdp__divider"></div>
 
@@ -583,6 +602,75 @@
     font-size: 1rem !important;
   }
 
+  /* Notify me */
+  .pdp__notify {
+    margin-top: 1rem;
+    padding: 1.25rem;
+    border-radius: 16px;
+    border: 1px solid rgba(255,255,255,0.1);
+    background: rgba(255,255,255,0.03);
+  }
+
+  .pdp__notify-title {
+    font-size: 0.82rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.5);
+    margin: 0 0 0.85rem;
+  }
+
+  .pdp__notify-row {
+    display: flex;
+    gap: 0.6rem;
+  }
+
+  .pdp__notify-input {
+    flex: 1;
+    background: rgba(255,255,255,0.07);
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 10px;
+    color: #fff;
+    font-family: 'CircularStd', sans-serif;
+    font-size: 0.9rem;
+    padding: 0.65rem 0.9rem;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+
+  .pdp__notify-input::placeholder { color: rgba(255,255,255,0.3); }
+  .pdp__notify-input:focus { border-color: #a78bfa; }
+
+  .pdp__notify-btn {
+    background: linear-gradient(135deg, #a78bfa, #7c3aed);
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    font-family: 'CircularStd', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 500;
+    padding: 0.65rem 1.2rem;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: opacity 0.2s;
+  }
+
+  .pdp__notify-btn:hover { opacity: 0.85; }
+  .pdp__notify-btn:disabled { opacity: 0.5; cursor: default; }
+
+  .pdp__notify-fine {
+    font-size: 0.72rem;
+    color: rgba(255,255,255,0.3);
+    margin: 0.6rem 0 0;
+    line-height: 1.4;
+  }
+
+  .pdp__notify-success {
+    font-size: 0.85rem;
+    color: #22c55e;
+    margin: 0.75rem 0 0;
+  }
+
   .pdp__divider {
     height: 1px;
     background: rgba(255,255,255,0.1);
@@ -901,6 +989,10 @@
       var label = document.getElementById('pdp-option-val-' + productId + '-' + i);
       if (label) label.textContent = variant.options[i];
     });
+
+    // Toggle notify block
+    var notifyBlock = document.getElementById('pdp-notify-' + productId);
+    if (notifyBlock) notifyBlock.hidden = variant.available;
   }
 
   form.querySelectorAll('input[type="radio"]').forEach(function(radio) {
@@ -990,6 +1082,48 @@
       btn.textContent = expanded ? 'Réduire' : 'Lire la suite';
     });
   });
+
+  // Notify me — back in stock subscription
+  var notifyBlock = document.getElementById('pdp-notify-' + productId);
+  if (notifyBlock) {
+    var notifyBtn = notifyBlock.querySelector('.pdp__notify-btn');
+    var notifyInput = notifyBlock.querySelector('.pdp__notify-input');
+    var notifySuccess = notifyBlock.querySelector('.pdp__notify-success');
+    var notifyFine = notifyBlock.querySelector('.pdp__notify-fine');
+
+    notifyBtn.addEventListener('click', function() {
+      var email = notifyInput.value.trim();
+      if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+        notifyInput.focus();
+        notifyInput.style.borderColor = '#ef4444';
+        setTimeout(function() { notifyInput.style.borderColor = ''; }, 1500);
+        return;
+      }
+
+      notifyBtn.disabled = true;
+      notifyBtn.textContent = '…';
+
+      // Subscribe email to Shopify newsletter + store restock request via contact
+      var formData = new FormData();
+      formData.append('form_type', 'customer');
+      formData.append('utf8', '✓');
+      formData.append('customer[email]', email);
+      formData.append('customer[accepts_marketing]', '1');
+      formData.append('customer[tags]', 'restock-alert,' + notifyBtn.dataset.productId);
+
+      fetch('/', { method: 'POST', body: formData })
+        .then(function() {
+          notifyInput.hidden = true;
+          notifyBtn.hidden = true;
+          notifyFine.hidden = true;
+          notifySuccess.hidden = false;
+        })
+        .catch(function() {
+          notifyBtn.disabled = false;
+          notifyBtn.textContent = 'Me notifier';
+        });
+    });
+  }
 
   // Holo effect on ATC button
   var atcBtnHolo = document.getElementById('pdp-atc-' + productId);

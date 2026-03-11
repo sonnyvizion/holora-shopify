@@ -15,11 +15,11 @@
 
   <div class="hero-video__content">
     {% if section.settings.subtitle != blank %}
-      <p class="hero-video__subtitle">{{ section.settings.subtitle }}</p>
+      <p class="hero-video__subtitle">{{ section.settings.subtitle | newline_to_br }}</p>
     {% endif %}
 
     {% if section.settings.title != blank %}
-      <h1 class="hero-video__title">{{ section.settings.title }}</h1>
+      <h1 class="hero-video__title">{{ section.settings.title | newline_to_br }}</h1>
     {% endif %}
 
     <div class="hero-video__buttons">
@@ -36,20 +36,26 @@
     </div>
   </div>
 
-  {% assign pills = section.blocks | where: 'type', 'category_pill' %}
-  {% if pills.size > 0 %}
-    <div class="hero-video__pills">
-      {% for block in pills %}
-        <a href="{{ block.settings.collection.url }}" class="hero-video__pill {% if block.settings.image %}hero-video__pill--image{% endif %}" style="--pill-img-h: {{ block.settings.image_size | default: 40 }}px" {{ block.shopify_attributes }}>
-          {% if block.settings.image %}
-            <img class="hero-video__pill-img" src="{{ block.settings.image | image_url: width: 400 }}" alt="{{ block.settings.label | escape }}" loading="lazy">
-          {% else %}
-            {{ block.settings.label }}
-          {% endif %}
-        </a>
-      {% endfor %}
-    </div>
-  {% endif %}
+  <div class="hero-video__bottom">
+    {% if section.settings.btn_subtext != blank %}
+      <p class="hero-video__btn-subtext">{{ section.settings.btn_subtext | newline_to_br }}</p>
+    {% endif %}
+
+    {% assign pills = section.blocks | where: 'type', 'category_pill' %}
+    {% if pills.size > 0 %}
+      <div class="hero-video__pills">
+        {% for block in pills %}
+          <a href="{{ block.settings.collection.url }}" class="hero-video__pill {% if block.settings.image %}hero-video__pill--image{% endif %}" style="--pill-img-h: {{ block.settings.image_size | default: 40 }}px" {{ block.shopify_attributes }}>
+            {% if block.settings.image %}
+              <img class="hero-video__pill-img" src="{{ block.settings.image | image_url: width: 400 }}" alt="{{ block.settings.label | escape }}" loading="lazy">
+            {% else %}
+              {{ block.settings.label }}
+            {% endif %}
+          </a>
+        {% endfor %}
+      </div>
+    {% endif %}
+  </div>
 
 </section>
 
@@ -116,6 +122,24 @@
     margin-bottom: 2rem;
   }
 
+  .hero-video__bottom {
+    position: relative;
+    z-index: 2;
+    margin-top: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+  }
+
+  .hero-video__btn-subtext {
+    margin: 0 0 0.75rem;
+    font-size: 0.78rem;
+    color: rgba(255,255,255,0.4);
+    letter-spacing: 0.01em;
+    text-align: center;
+  }
+
   .hero-video__buttons {
     display: flex;
     flex-direction: row;
@@ -153,6 +177,7 @@
     backdrop-filter: blur(24px) saturate(180%);
     -webkit-backdrop-filter: blur(24px) saturate(180%);
     box-shadow: inset 0 1px 0 rgba(255,255,255,0.35), 0 4px 24px rgba(0,0,0,0.15);
+    transition: background 0.25s ease, color 0.25s ease, border-color 0.25s ease, transform 0.2s ease;
   }
 
   .hero-video__btn--secondary:hover {
@@ -161,14 +186,11 @@
   }
 
   .hero-video__pills {
-    position: relative;
-    z-index: 2;
     display: flex;
     flex-wrap: wrap;
     gap: 0.75rem;
     justify-content: center;
-    margin-top: auto;
-    padding-top: 3rem;
+    padding-top: 1.5rem;
     opacity: 0;
     transform: translateY(16px);
     transition: opacity 0.8s ease 0.2s, transform 0.8s ease 0.2s;
@@ -207,7 +229,7 @@
     backdrop-filter: blur(24px) saturate(160%);
     -webkit-backdrop-filter: blur(24px) saturate(160%);
     box-shadow: inset 0 1px 0 rgba(255,255,255,0.28), 0 2px 12px rgba(0,0,0,0.2);
-    transition: background 0.2s, border-color 0.2s;
+    transition: background 0.2s, border-color 0.2s, transform 0.2s;
     position: relative;
     overflow: hidden;
   }
@@ -215,6 +237,7 @@
   .hero-video__pill:hover {
     background: rgba(255,255,255,0.14);
     border-color: rgba(255,255,255,0.35);
+    transform: translateY(-1px);
   }
 
   .hero-video__btn .holo-layer {
@@ -251,6 +274,11 @@
 
   .hero-video__btn:hover .holo-layer,
   .hero-video__pill:hover .holo-layer { opacity: 1; }
+
+  .hero-video__btn--primary .holo-layer,
+  .hero-video__btn--secondary .holo-layer {
+    mix-blend-mode: multiply;
+  }
 
   @media (max-width: 768px) {
     .hero-video__pills {
@@ -382,6 +410,12 @@
       "type": "url",
       "id": "btn_secondary_url",
       "label": "Lien"
+    },
+    {
+      "type": "text",
+      "id": "btn_subtext",
+      "label": "Texte sous les boutons",
+      "placeholder": "Ex : Livraison offerte dès 50€"
     }
   ],
   "blocks": [
