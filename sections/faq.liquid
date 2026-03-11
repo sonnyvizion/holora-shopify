@@ -1,0 +1,227 @@
+<div class="faq full-width" id="faq-{{ section.id }}">
+
+  <div class="faq__header">
+    <h2 class="faq__title">{{ section.settings.title }}</h2>
+  </div>
+  <div class="faq__title-line"></div>
+
+  <div class="faq__inner">
+    {% for block in section.blocks %}
+      <div class="faq__item" {{ block.shopify_attributes }}>
+        <button class="faq__question" aria-expanded="false">
+          <span>{{ block.settings.question }}</span>
+          <svg class="faq__icon" width="20" height="20" viewBox="0 0 20 20" fill="none">
+            <path d="M5 7.5L10 12.5L15 7.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+        <div class="faq__answer">
+          <p>{{ block.settings.answer }}</p>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+
+</div>
+
+<script>
+(function() {
+  var faq = document.getElementById('faq-{{ section.id }}');
+  if (!faq) return;
+
+  faq.querySelectorAll('.faq__question').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      var item = btn.parentElement;
+      var isOpen = btn.getAttribute('aria-expanded') === 'true';
+
+      // Close all
+      faq.querySelectorAll('.faq__item').forEach(function(el) {
+        el.querySelector('.faq__question').setAttribute('aria-expanded', 'false');
+        el.classList.remove('faq__item--open');
+      });
+
+      // Open clicked if was closed
+      if (!isOpen) {
+        btn.setAttribute('aria-expanded', 'true');
+        item.classList.add('faq__item--open');
+      }
+    });
+  });
+})();
+</script>
+
+{% stylesheet %}
+  .faq {
+    background: #1a1a1a;
+    font-family: 'CircularStd', sans-serif;
+    padding: 4rem 0;
+  }
+
+  .faq__header {
+    padding: 0 3rem;
+  }
+
+  .faq__title {
+    font-size: 2rem;
+    font-weight: 300;
+    letter-spacing: -0.03em;
+    color: #fff;
+    margin: 0;
+  }
+
+  .faq__title-line {
+    height: 1px;
+    background: linear-gradient(90deg, #D9D9D9, #242427);
+    margin: 1rem 3rem 2rem;
+  }
+
+  .faq__inner {
+    padding: 0 3rem;
+    max-width: 720px;
+  }
+
+  .faq__item {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  }
+
+  .faq__item:first-child {
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+  }
+
+  .faq__question {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 1.25rem 0;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #fff;
+    font-family: 'CircularStd', sans-serif;
+    font-size: 1rem;
+    font-weight: 300;
+    letter-spacing: -0.01em;
+    text-align: left;
+    transition: color 0.2s;
+  }
+
+  .faq__question:hover {
+    color: #ccc;
+  }
+
+  .faq__icon {
+    flex-shrink: 0;
+    color: #666;
+    transition: transform 0.3s ease;
+  }
+
+  .faq__item--open .faq__icon {
+    transform: rotate(180deg);
+  }
+
+  .faq__answer {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.35s ease;
+  }
+
+  .faq__item--open .faq__answer {
+    max-height: 400px;
+  }
+
+  .faq__answer p {
+    font-size: 0.9rem;
+    color: #888;
+    line-height: 1.65;
+    margin: 0 0 1.25rem;
+  }
+
+  @media (max-width: 768px) {
+    .faq__header {
+      padding: 0 1.25rem;
+    }
+
+    .faq__title-line {
+      margin-left: 1.25rem;
+      margin-right: 1.25rem;
+    }
+
+    .faq__inner {
+      padding: 0 1.25rem;
+    }
+
+    .faq__title {
+      font-size: 1.5rem;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "FAQ",
+  "settings": [
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Titre",
+      "default": "Questions fréquentes"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "item",
+      "name": "Question",
+      "settings": [
+        {
+          "type": "text",
+          "id": "question",
+          "label": "Question",
+          "default": "Quels sont les délais de livraison ?"
+        },
+        {
+          "type": "textarea",
+          "id": "answer",
+          "label": "Réponse",
+          "default": "Toutes les commandes sont expédiées sous 48h ouvrées. Vous recevrez un email de confirmation avec le numéro de suivi dès l'expédition."
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "FAQ",
+      "blocks": [
+        {
+          "type": "item",
+          "settings": {
+            "question": "Quels sont les délais de livraison ?",
+            "answer": "Toutes les commandes sont expédiées sous 48h ouvrées. Vous recevrez un email de confirmation avec le numéro de suivi dès l'expédition."
+          }
+        },
+        {
+          "type": "item",
+          "settings": {
+            "question": "Comment sont emballées les cartes ?",
+            "answer": "Chaque carte est protégée dans une sleeve rigide, puis placée dans une enveloppe renforcée ou une boîte selon la valeur du produit. Nous prenons le soin d'emballer vos commandes pour éviter tout dommage pendant le transport."
+          }
+        },
+        {
+          "type": "item",
+          "settings": {
+            "question": "Puis-je retourner un article ?",
+            "answer": "Oui, vous disposez de 14 jours après réception pour nous signaler un problème. Les retours sont acceptés pour tout article défectueux ou non conforme à la description."
+          }
+        },
+        {
+          "type": "item",
+          "settings": {
+            "question": "Les cartes sont-elles authentiques ?",
+            "answer": "Absolument. Toutes nos cartes proviennent de sources officielles. Nous garantissons l'authenticité de chaque produit vendu sur notre boutique."
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

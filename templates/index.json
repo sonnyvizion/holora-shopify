@@ -9,12 +9,344 @@
  */
 {
   "sections": {
-    "main": {
-      "type": "hello-world",
-      "settings": {}
+    "hero": {
+      "type": "hero-banner",
+      "blocks": {
+        "category_pill_nVyjCG": {
+          "type": "category_pill",
+          "settings": {
+            "label": "Catégorie",
+            "url": ""
+          }
+        },
+        "category_pill_WJxX6V": {
+          "type": "category_pill",
+          "settings": {
+            "label": "Catégorie",
+            "url": ""
+          }
+        },
+        "category_pill_Dk7XtP": {
+          "type": "category_pill",
+          "settings": {
+            "label": "Catégorie",
+            "url": ""
+          }
+        },
+        "category_pill_beHKQK": {
+          "type": "category_pill",
+          "settings": {
+            "label": "Catégorie",
+            "url": ""
+          }
+        }
+      },
+      "block_order": [
+        "category_pill_nVyjCG",
+        "category_pill_WJxX6V",
+        "category_pill_Dk7XtP",
+        "category_pill_beHKQK"
+      ],
+      "settings": {
+        "bg_image": "shopify://shop_images/Rectangle_42.png",
+        "subtitle": "Boutique TCG · Pokémon & One Piece",
+        "title": "Bienvenue chez Holora\nla puissance du jeux",
+        "btn_primary_label": "Voir les nouveautés",
+        "btn_primary_url": "",
+        "btn_secondary_label": "Cartes gradées",
+        "btn_secondary_url": ""
+      }
+    },
+    "announcement_bar_kkQjna": {
+      "type": "announcement-bar",
+      "blocks": {
+        "item_DFgkGA": {
+          "type": "item",
+          "settings": {
+            "text": "Livraison offerte"
+          }
+        },
+        "item_fPdGky": {
+          "type": "item",
+          "settings": {
+            "text": "Dès 200€ d'achats"
+          }
+        },
+        "item_ME3zCA": {
+          "type": "item",
+          "settings": {
+            "text": "Expédition en 48 Heures"
+          }
+        }
+      },
+      "block_order": [
+        "item_DFgkGA",
+        "item_fPdGky",
+        "item_ME3zCA"
+      ],
+      "name": "Announcement Bar",
+      "settings": {
+        "bg_color": "#ca94f9",
+        "text_color": "#000000",
+        "speed": 25
+      }
+    },
+    "stats": {
+      "type": "stats-bar",
+      "blocks": {
+        "stat_apG4hA": {
+          "type": "stat",
+          "settings": {
+            "prefix": "+",
+            "count_from": 0,
+            "count_to": 1027,
+            "suffix": "",
+            "label": "Articles vendus"
+          }
+        },
+        "stat_P37WHf": {
+          "type": "stat",
+          "settings": {
+            "prefix": "+",
+            "count_from": 0,
+            "count_to": 1027,
+            "suffix": "",
+            "label": "Articles vendus"
+          }
+        },
+        "stat_CiF4Jt": {
+          "type": "stat",
+          "settings": {
+            "prefix": "+",
+            "count_from": 0,
+            "count_to": 1027,
+            "suffix": "",
+            "label": "Articles vendus"
+          }
+        }
+      },
+      "block_order": [
+        "stat_apG4hA",
+        "stat_P37WHf",
+        "stat_CiF4Jt"
+      ],
+      "settings": {
+        "bg_color": "#242427",
+        "duration": 1500
+      }
+    },
+    "tagline": {
+      "type": "tagline",
+      "settings": {
+        "title_desktop": "Les pièces que tout le monde veut sont ici maintenant, avant tout le monde\nNe laisse pas quelqu'un d'autre les prendre",
+        "title_mobile": "Les pièces que tout le monde veut sont ici maintenant, avant tout le monde\nNe laisse pas quelqu'un d'autre les prendre",
+        "subtitle": "Chaque semaine de nouveaux arrivages. Les stocks partent vite."
+      }
+    },
+    "collection_slider": {
+      "type": "collection-slider",
+      "settings": {
+        "title": "En ce moment",
+        "collection": "booster",
+        "products_count": 8,
+        "cta_label": "Voir les nouveautés",
+        "cta_url": ""
+      }
+    },
+    "product_highlight": {
+      "type": "product-highlight",
+      "settings": {
+        "product": "",
+        "title": "Ils arrivent !",
+        "subtitle": "Duopack Héros Transcendants",
+        "description": "Prépare-toi à découvrir des cartes puissantes, des Pokémon emblématiques et des surprises incroyables dans chaque tripack. Que tu sois collectionneur ou joueur, cette nouvelle édition promet des combats épiques et des cartes à couper le souffle.",
+        "price_prefix": "À partir de",
+        "price_override": "59,99",
+        "cta_label": "Je les veux !",
+        "cta_url": "shopify://products/boite-surprise-ev8-5-evolution-prismatique"
+      }
+    },
+    "live_banner": {
+      "type": "live-banner",
+      "settings": {
+        "title": "Nous sommes aussi en live !",
+        "subtitle": "Jusqu'à 3x par semaine",
+        "embed_code": "<iframe width=\"560\" height=\"315\" src=\"https://www.youtube.com/embed/p4kphvgcSKA?si=a92BTwMEVPw00tbo\" title=\"YouTube video player\" frameborder=\"0\" allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share\" referrerpolicy=\"strict-origin-when-cross-origin\" allowfullscreen=\"\"></iframe>"
+      }
+    },
+    "social_links": {
+      "type": "social-links",
+      "settings": {
+        "text": "Retrouvez nous aussi sur nos réseaux sociaux",
+        "instagram_logo": "shopify://shop_images/Insta.png",
+        "instagram_label": "Instagram",
+        "instagram_url": "https://www.instagram.com/holora.tcg/",
+        "tiktok_logo": "shopify://shop_images/TikTok.png",
+        "tiktok_label": "TikTok",
+        "tiktok_url": "https://www.instagram.com/holora.tcg/",
+        "facebook_logo": "shopify://shop_images/Facebook.png",
+        "facebook_label": "Facebook",
+        "facebook_url": "https://www.instagram.com/holora.tcg/",
+        "whatsapp_logo": "shopify://shop_images/Whatsapp_7c226863-04ac-4db9-b39c-833459bb3ee6.png",
+        "whatsapp_label": "Whatsapp",
+        "whatsapp_url": "https://www.instagram.com/holora.tcg/"
+      }
+    },
+    "announcement_bar_gqGaFf": {
+      "type": "announcement-bar",
+      "blocks": {
+        "item_DpQzt3": {
+          "type": "item",
+          "settings": {
+            "text": "Livraison offerte"
+          }
+        },
+        "item_iXiqNn": {
+          "type": "item",
+          "settings": {
+            "text": "Dès 200€ d'achats"
+          }
+        },
+        "item_MApBPb": {
+          "type": "item",
+          "settings": {
+            "text": "Expédition en 48 Heures"
+          }
+        }
+      },
+      "block_order": [
+        "item_DpQzt3",
+        "item_iXiqNn",
+        "item_MApBPb"
+      ],
+      "name": "Announcement Bar",
+      "settings": {
+        "bg_color": "#ffb76b",
+        "text_color": "#000000",
+        "speed": 25
+      }
+    },
+    "reviews_slider_jbY6Dz": {
+      "type": "reviews-slider",
+      "blocks": {
+        "review_URMgj6": {
+          "type": "review",
+          "settings": {
+            "rating": "5",
+            "logo_text": "voggt",
+            "message": "Livraison rapide ! Emballage soigné. Je recommande"
+          }
+        },
+        "review_rEBn8U": {
+          "type": "review",
+          "settings": {
+            "rating": "5",
+            "logo_text": "voggt",
+            "message": "Super vendeur, cartes bien protégées et expédition rapide !"
+          }
+        },
+        "review_Lc9NEg": {
+          "type": "review",
+          "settings": {
+            "rating": "4",
+            "logo_text": "voggt",
+            "message": "Très bonne expérience, je reviendrai sans hésiter."
+          }
+        },
+        "review_8gFBtL": {
+          "type": "review",
+          "settings": {
+            "rating": "5",
+            "logo_text": "voggt",
+            "message": "Parfait comme d'habitude, merci !"
+          }
+        }
+      },
+      "block_order": [
+        "review_URMgj6",
+        "review_rEBn8U",
+        "review_Lc9NEg",
+        "review_8gFBtL"
+      ],
+      "name": "Reviews Slider",
+      "settings": {
+        "title": "Ce qu'ils en disent",
+        "subtitle": "Jusqu'à 3x par semaine",
+        "speed": 30
+      }
+    },
+    "faq_D8xtEF": {
+      "type": "faq",
+      "blocks": {
+        "item_WykmYd": {
+          "type": "item",
+          "settings": {
+            "question": "Quels sont les délais de livraison ?",
+            "answer": "Toutes les commandes sont expédiées sous 48h ouvrées. Vous recevrez un email de confirmation avec le numéro de suivi dès l'expédition."
+          }
+        },
+        "item_YLraCb": {
+          "type": "item",
+          "settings": {
+            "question": "Comment sont emballées les cartes ?",
+            "answer": "Chaque carte est protégée dans une sleeve rigide, puis placée dans une enveloppe renforcée ou une boîte selon la valeur du produit. Nous prenons le soin d'emballer vos commandes pour éviter tout dommage pendant le transport."
+          }
+        },
+        "item_M3RXFD": {
+          "type": "item",
+          "settings": {
+            "question": "Puis-je retourner un article ?",
+            "answer": "Oui, vous disposez de 14 jours après réception pour nous signaler un problème. Les retours sont acceptés pour tout article défectueux ou non conforme à la description."
+          }
+        },
+        "item_gakRQz": {
+          "type": "item",
+          "settings": {
+            "question": "Les cartes sont-elles authentiques ?",
+            "answer": "Absolument. Toutes nos cartes proviennent de sources officielles. Nous garantissons l'authenticité de chaque produit vendu sur notre boutique."
+          }
+        }
+      },
+      "block_order": [
+        "item_WykmYd",
+        "item_YLraCb",
+        "item_M3RXFD",
+        "item_gakRQz"
+      ],
+      "name": "FAQ",
+      "settings": {
+        "title": "Questions fréquentes"
+      }
+    },
+    "newsletter_blog_73fr9V": {
+      "type": "newsletter-blog",
+      "name": "Newsletter & Blog",
+      "settings": {
+        "title": "Restez dans la course",
+        "newsletter_title": "Ne loupez rien, en vous abonnant à la newsletter",
+        "newsletter_desc": "Nouveaux arrivages, offres exclusives, alertes de stock.\nPas de spam — juste le TCG.",
+        "placeholder": "name@email.fr",
+        "btn_label": "S'inscrire",
+        "article": "infos/le-phenomene-du-tcg-pokemon-entre-collection-strategie-et-passion",
+        "article_desc": "Depuis plus de deux décennies, le jeu de cartes à collectionner Pokémon — officiellement appelé Pokémon Trading Card Game — passionne des millions de joueurs et de collectionneurs à travers le monde.",
+        "cta_article": "Voir l'article",
+        "blog_url": "",
+        "cta_blog": "Voir tous les articles"
+      }
     }
   },
   "order": [
-    "main"
+    "hero",
+    "announcement_bar_kkQjna",
+    "stats",
+    "tagline",
+    "collection_slider",
+    "product_highlight",
+    "live_banner",
+    "social_links",
+    "announcement_bar_gqGaFf",
+    "reviews_slider_jbY6Dz",
+    "faq_D8xtEF",
+    "newsletter_blog_73fr9V"
   ]
 }
