@@ -18,7 +18,6 @@
     autoplay
     muted
     playsinline
-    loop
     preload="auto"
   ></video>
   {% endif %}
@@ -319,6 +318,10 @@
     .hero-video__btn { font-size: 14px; }
     .hero-video__pill { font-size: 14px; }
   }
+
+  .hero-video__btn-subtext {
+    width: 85%;
+  }
 {% endstylesheet %}
 
 <script>
@@ -337,11 +340,21 @@
     if (pills)   pills.classList.add('is-visible');
   }, textDelay);
 
-  // Boucle sans freeze : repart à 5.01s avant la dernière frame
+  // Boucle sans freeze desktop : repart à 5.01s avant la dernière frame
   if (video) {
     video.addEventListener('timeupdate', function() {
       if (video.duration && video.currentTime >= video.duration - 0.5) {
         video.currentTime = 5.01;
+      }
+    });
+  }
+
+  // Boucle sans freeze mobile : repart au début avant la dernière frame
+  var videoMobile = section.querySelector('.hero-video__video--mobile');
+  if (videoMobile) {
+    videoMobile.addEventListener('timeupdate', function() {
+      if (videoMobile.duration && videoMobile.currentTime >= videoMobile.duration - 0.5) {
+        videoMobile.currentTime = 0;
       }
     });
   }
