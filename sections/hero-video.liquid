@@ -2,11 +2,23 @@
 
   {% if section.settings.video != blank %}
   <video
-    class="hero-video__video"
+    class="hero-video__video hero-video__video--desktop"
     src="{{ section.settings.video.sources[0].url }}"
     autoplay
     muted
     playsinline
+    preload="auto"
+  ></video>
+  {% endif %}
+
+  {% if section.settings.video_mobile != blank %}
+  <video
+    class="hero-video__video hero-video__video--mobile"
+    src="{{ section.settings.video_mobile.sources[0].url }}"
+    autoplay
+    muted
+    playsinline
+    loop
     preload="auto"
   ></video>
   {% endif %}
@@ -83,6 +95,13 @@
     z-index: 0;
   }
 
+  .hero-video__video--mobile { display: none; }
+
+  @media (max-width: 768px) {
+    .hero-video__video--desktop { display: none; }
+    .hero-video__video--mobile  { display: block; }
+  }
+
   .hero-video__overlay {
     position: absolute;
     inset: 0;
@@ -138,6 +157,7 @@
     color: rgba(255,255,255,0.4);
     letter-spacing: 0.01em;
     text-align: center;
+    width: 60%;
   }
 
   .hero-video__buttons {
@@ -306,7 +326,7 @@
   var section = document.getElementById('hero-video-{{ section.id }}');
   if (!section) return;
 
-  var video   = section.querySelector('.hero-video__video');
+  var video   = section.querySelector('.hero-video__video--desktop');
   var content = section.querySelector('.hero-video__content');
   var pills   = section.querySelector('.hero-video__pills');
   var textDelay = {{ section.settings.text_delay | times: 1000 | round }};
@@ -317,17 +337,11 @@
     if (pills)   pills.classList.add('is-visible');
   }, textDelay);
 
-  // Loop last 5 seconds when video ends
+  // Boucle sans freeze : repart à 5.01s avant la dernière frame
   if (video) {
     video.addEventListener('timeupdate', function() {
-      if (video.duration && video.currentTime >= video.duration - 5 && !video._looping) {
-        video._looping = true;
-      }
-    });
-    video.addEventListener('ended', function() {
-      if (video._looping) {
-        video.currentTime = video.duration - 5;
-        video.play();
+      if (video.duration && video.currentTime >= video.duration - 0.5) {
+        video.currentTime = 5.01;
       }
     });
   }
@@ -358,7 +372,13 @@
     {
       "type": "video",
       "id": "video",
-      "label": "Vidéo de fond"
+      "label": "Vidéo de fond (desktop)"
+    },
+    {
+      "type": "video",
+      "id": "video_mobile",
+      "label": "Vidéo de fond (mobile)",
+      "info": "Optionnel — boucle du début à la fin"
     },
     {
       "type": "range",

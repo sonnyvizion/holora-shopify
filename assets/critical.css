@@ -212,3 +212,10 @@ input[type="button"] {
 .shopify-section > .full-width {
   grid-column: 1 / -1;
 }
+
+/* Homepage h2 — 44px sur desktop, sauf tagline */
+@media (min-width: 769px) {
+  .template--index h2:not(.tagline__title) {
+    font-size: 44px;
+  }
+}
