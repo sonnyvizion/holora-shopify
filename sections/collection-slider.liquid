@@ -74,6 +74,7 @@
             class="col-slider__cta"
             data-variant-id="{{ product.variants.first.id }}"
           >
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex-shrink:0"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
             <span class="col-slider__cta-desktop">Ajouter au panier</span>
             <span class="col-slider__cta-mobile">Voir Plus</span>
           </button>
@@ -113,10 +114,12 @@
 
   .col-slider__title {
     font-size: 2rem;
-    font-weight: 300;
+    font-weight: 700;
     letter-spacing: -0.03em;
     margin: 0;
     color: #fff;
+    text-transform: uppercase;
+    font-style: italic;
   }
 
   .col-slider__title-line {
@@ -166,6 +169,15 @@
     overflow: hidden;
     padding-bottom: 52px;
     margin-bottom: -52px;
+    cursor: grab;
+  }
+
+  .col-slider__track-wrap.is-dragging {
+    cursor: grabbing;
+  }
+
+  .col-slider__track-wrap.is-dragging .col-slider__wrap {
+    pointer-events: none;
   }
 
   .col-slider__track {
@@ -312,7 +324,8 @@
     color: #fff;
     border: none;
     font-size: 0.85rem;
-    font-weight: 500;
+    font-weight: 700;
+    text-transform : uppercase; font-style : italic;
     letter-spacing: -0.02em;
     cursor: pointer;
     transition: transform 0.4s ease-out, background 0.2s;
@@ -323,6 +336,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    gap: 0.5rem;
   }
 
   .col-slider__wrap:hover .col-slider__cta {
@@ -350,17 +364,40 @@
     justify-content: center;
     padding: 0.9rem 2.5rem;
     border-radius: 999px;
-    background: #F6F6F6;
-    border: 1px solid #F6F6F6;
-    color: #000000;
-    font-size: 0.95rem;
-    font-weight: 400;
-    letter-spacing: -0.02em;
+    background: #fff;
+    color: #111;
+    font-size: 16px;
+    font-weight: 700;
+    letter-spacing: -0.05em;
+    text-transform: uppercase;
+    font-style: italic;
     text-decoration: none;
-    transition: background 0.2s, border-color 0.2s;
+    position: relative;
+    overflow: hidden;
+    isolation: isolate;
+    transition: transform 0.2s;
   }
 
+  .col-slider__footer-cta .holo-layer {
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s;
+    mix-blend-mode: multiply;
+    background: conic-gradient(
+      from var(--holo-angle, 0deg) at var(--holo-x, 50%) var(--holo-y, 50%),
+      rgba(255,0,128,0.12), rgba(255,165,0,0.10), rgba(255,255,0,0.08),
+      rgba(0,255,128,0.10), rgba(0,180,255,0.12), rgba(160,0,255,0.10),
+      rgba(255,0,128,0.12)
+    );
+  }
+
+  .col-slider__footer-cta:hover .holo-layer { opacity: 1; }
+
   .col-slider__footer-cta:hover {
+    transform: translateY(-1px);
     background: #e0e0e0;
     border-color: #e0e0e0;
   }
@@ -383,22 +420,22 @@
     }
 
     .col-slider__title-line {
-      margin-left: 1rem;
-      margin-right: 1rem;
+      margin: 1rem 1rem 1.5rem;
     }
 
     .col-slider__title {
-      font-size: 2rem;
+      font-size: 1.5rem;
     }
 
     .col-slider__collection-label {
       font-size: 0.5rem;
-      font-weight: 100;
+      font-weight: 700;
       margin: 0;
       color: #ca94f9;
       letter-spacing: 0.02em;
       text-transform: uppercase;
       line-height: 1.2;
+      font-style: italic;
     }
 
     .col-slider__name {
@@ -429,6 +466,10 @@
       text-decoration: none;
       margin-top: auto;
       padding-top: 0.6rem;
+    }
+
+    .col-slider {
+      padding: 4rem 0;
     }
   }
 {% endstylesheet %}
@@ -464,6 +505,51 @@
       track.scrollBy({ left: cardWidth(), behavior: 'smooth' });
     });
 
+    // Drag-to-scroll on desktop
+    var wrap = document.querySelector('#col-slider-{{ section.id }} .col-slider__track-wrap');
+    if (wrap) {
+      var isDragging = false;
+      var startX = 0;
+      var startScroll = 0;
+      var hasDragged = false;
+
+      wrap.addEventListener('mousedown', function(e) {
+        if (e.button !== 0) return;
+        isDragging = true;
+        hasDragged = false;
+        startX = e.clientX;
+        startScroll = track.scrollLeft;
+        track.style.scrollBehavior = 'auto';
+        track.style.scrollSnapType = 'none';
+        wrap.classList.add('is-dragging');
+        e.preventDefault();
+      });
+
+      document.addEventListener('mousemove', function(e) {
+        if (!isDragging) return;
+        var dx = e.clientX - startX;
+        if (Math.abs(dx) > 4) hasDragged = true;
+        track.scrollLeft = startScroll - dx;
+      });
+
+      document.addEventListener('mouseup', function() {
+        if (!isDragging) return;
+        isDragging = false;
+        wrap.classList.remove('is-dragging');
+        track.style.scrollBehavior = '';
+        track.style.scrollSnapType = '';
+      });
+
+      // Block click on children if we actually dragged
+      wrap.addEventListener('click', function(e) {
+        if (hasDragged) {
+          e.preventDefault();
+          e.stopImmediatePropagation();
+          hasDragged = false;
+        }
+      }, true);
+    }
+
     track.querySelectorAll('.col-slider__cta').forEach(function(btn) {
       btn.addEventListener('click', function() {
         var variantId = btn.dataset.variantId;
@@ -490,6 +576,22 @@
       });
     });
   })();
+
+  // Holo effect on footer CTA
+  document.querySelectorAll('.col-slider__footer-cta').forEach(function(el) {
+    var layer = document.createElement('span');
+    layer.className = 'holo-layer';
+    el.appendChild(layer);
+    el.addEventListener('mousemove', function(e) {
+      var rect = el.getBoundingClientRect();
+      var x = ((e.clientX - rect.left) / rect.width) * 100;
+      var y = ((e.clientY - rect.top) / rect.height) * 100;
+      var angle = Math.atan2(e.clientY - rect.top - rect.height / 2, e.clientX - rect.left - rect.width / 2) * (180 / Math.PI);
+      el.style.setProperty('--holo-x', x + '%');
+      el.style.setProperty('--holo-y', y + '%');
+      el.style.setProperty('--holo-angle', angle + 'deg');
+    });
+  });
 </script>
 
 {% schema %}

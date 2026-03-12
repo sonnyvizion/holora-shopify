@@ -90,6 +90,7 @@
             data-variant-id="{{ product.variants.first.id }}"
             data-product-title="{{ product.title | escape }}"
           >
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="width:15px;height:15px;flex-shrink:0"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
             Ajouter au panier
           </button>
         {% else %}
@@ -254,7 +255,9 @@
 
   .coll__hero-title {
     font-size: clamp(2rem, 5vw, 3.5rem);
-    font-weight: 300;
+    font-weight: 700;
+    text-transform: uppercase;
+    font-style: italic;
     letter-spacing: -0.04em;
     color: #fff;
     margin: 0 0 0.75rem;
@@ -408,7 +411,9 @@
 
   .coll__name {
     font-size: 0.9rem;
-    font-weight: 400;
+    font-weight: 700;
+    text-transform: uppercase;
+    font-style: italic;
     color: #111;
     margin: 0 0 0.4rem;
     letter-spacing: -0.01em;
@@ -461,6 +466,10 @@
     letter-spacing: -0.01em;
     position: relative;
     overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
   }
 
   .coll__atc:hover { background: #b87ef0; }
@@ -591,6 +600,8 @@
   .ci__title {
     font-size: clamp(1.5rem, 3vw, 2.4rem);
     font-weight: 700;
+    text-transform: uppercase;
+    font-style: italic;
     color: #fff;
     letter-spacing: -0.03em;
     margin: 0 0 1rem;

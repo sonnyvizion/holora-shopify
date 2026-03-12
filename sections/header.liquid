@@ -73,13 +73,14 @@
         <span class="site-header__cart-count" id="cart-count" style="display:none">0</span>
       </button>
 
-      <!-- Burger -->
-      <button class="site-header__burger" aria-label="Menu" aria-expanded="false" aria-controls="mobile-nav">
-        <span></span>
-        <span></span>
-        <span></span>
-      </button>
     </div>
+
+    <!-- Burger (direct child of inner for mobile reorder) -->
+    <button class="site-header__burger" aria-label="Menu" aria-expanded="false" aria-controls="mobile-nav">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
 
   </div>
 </header>
@@ -178,12 +179,14 @@
     {% for link in section.settings.menu.links %}
       <li class="mobile-nav__item">
         {% if link.links.size > 0 %}
-          <button class="mobile-nav__link mobile-nav__toggle" aria-expanded="false">
-            {{ link.title }}
-            <svg class="mobile-nav__chevron" width="16" height="16" viewBox="0 0 16 16" fill="none">
-              <path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-          </button>
+          <div class="mobile-nav__link mobile-nav__row">
+            <a href="{{ link.url }}" class="mobile-nav__row-link">{{ link.title }}</a>
+            <button class="mobile-nav__toggle" aria-expanded="false" aria-label="Ouvrir sous-menu">
+              <svg class="mobile-nav__chevron" width="16" height="16" viewBox="0 0 16 16" fill="none">
+                <path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </button>
+          </div>
           <ul class="mobile-nav__sub">
             {% for sub in link.links %}
               <li><a href="{{ sub.url }}" class="mobile-nav__sub-link">{{ sub.title }}</a></li>
@@ -604,7 +607,7 @@
     left: 0;
     right: 0;
     z-index: 200;
-    padding: 1.25rem 2rem;
+    padding: 0.5rem 1.5rem;
     transition: background 0.3s ease, transform 0.3s ease;
   }
 
@@ -651,6 +654,22 @@
     align-items: center;
     text-decoration: none;
     justify-self: start;
+    grid-column: 1; grid-row: 1;
+  }
+
+  .site-header__search {
+    grid-column: 2; grid-row: 1;
+  }
+
+  .site-header__actions {
+    grid-column: 3; grid-row: 1;
+    justify-self: end;
+    padding-right: 44px; /* space for burger */
+  }
+
+  .site-header__burger {
+    grid-column: 3; grid-row: 1;
+    justify-self: end;
   }
 
   .site-header__logo-img {
@@ -1248,6 +1267,7 @@
 
   .mobile-nav-glow { display: none; }
 
+  /* Desktop : slide depuis la droite */
   .mobile-nav {
     position: fixed;
     top: 0;
@@ -1266,10 +1286,21 @@
 
   .mobile-nav::-webkit-scrollbar { display: none; }
 
-
   .mobile-nav.is-open {
     transform: translateX(0);
     box-shadow: -2px 0 0 rgba(167,139,250,0.5), -12px 0 35px rgba(124,58,237,0.5), -30px 0 60px rgba(109,40,217,0.2);
+  }
+
+  /* Mobile : slide depuis la gauche */
+  @media (max-width: 768px) {
+    .mobile-nav {
+      left: 0;
+      right: auto;
+      transform: translateX(-100%);
+    }
+    .mobile-nav.is-open {
+      box-shadow: 2px 0 0 rgba(167,139,250,0.5), 12px 0 35px rgba(124,58,237,0.5), 30px 0 60px rgba(109,40,217,0.2);
+    }
   }
 
   .mobile-nav__list {
@@ -1303,6 +1334,33 @@
   }
 
   .mobile-nav__link:hover { color: rgba(255,255,255,0.7); }
+
+  .mobile-nav__row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    cursor: default;
+    background: none;
+  }
+
+  .mobile-nav__row-link {
+    flex: 1;
+    color: #fff;
+    text-decoration: none;
+  }
+
+  .mobile-nav__row-link:hover { color: rgba(255,255,255,0.7); }
+
+  .mobile-nav__toggle {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0.25rem;
+    display: flex;
+    align-items: center;
+    color: #fff;
+    flex-shrink: 0;
+  }
 
   .mobile-nav__chevron {
     flex-shrink: 0;
@@ -1425,11 +1483,37 @@
     }
 
     .site-header__inner {
-      grid-template-columns: 1fr auto;
+      display: flex;
+      align-items: center;
+      position: relative;
+    }
+
+    .site-header__logo {
+      grid-column: unset; grid-row: unset;
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      justify-self: unset;
+      pointer-events: auto;
     }
 
     .site-header__search {
       display: none !important;
+    }
+
+    .site-header__actions {
+      grid-column: unset; grid-row: unset;
+      justify-self: unset;
+      padding-right: 0;
+      margin-left: auto;
+      order: 1;
+    }
+
+    .site-header__burger {
+      grid-column: unset; grid-row: unset;
+      justify-self: unset;
+      order: -1;
+      flex-shrink: 0;
     }
 
     .site-header__search-btn {
